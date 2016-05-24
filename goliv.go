@@ -1,9 +1,7 @@
 package main
 
-import (
-	"fmt"
-)
+import lib "github.com/ericmdantas/goliv/lib"
 
 func main() {
-	fmt.Println("goliv")
+	lib.Yo()
 }
