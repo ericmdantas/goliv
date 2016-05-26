@@ -5,7 +5,7 @@ import "flag"
 func GetOptionsFromFlags() *Options {
 	opt := NewOptions()
 
-	noBrowser := flag.Bool("noBrowser", false, "")
+	noBrowser := flag.Bool("noBrowser", opt.NoBrowser, "")
 	host := flag.String("host", opt.Host, "")
 	secure := flag.Bool("secure", opt.Secure, "")
 	port := flag.String("port", opt.Port, "")
