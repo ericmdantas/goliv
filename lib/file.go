@@ -1,24 +1,21 @@
 package goliv
 
-import (
-	"fmt"
-	"io/ioutil"
-)
+import "io/ioutil"
 
 const (
-	mainHtml = "index.html"
+	mainHTML = "index.html"
 )
 
-func Yo() {
-	fmt.Println("yo!")
+type IndexFile struct {
+	IndexHTML string
 }
 
-func Read() string {
-	str, err := ioutil.ReadFile(mainHtml)
+func (f *IndexFile) ReadIndex() {
+	bs, err := ioutil.ReadFile(mainHTML)
 
 	if err != nil {
 		panic(err)
 	}
 
-	return string(str)
+	f.IndexHTML = string(bs)
 }
