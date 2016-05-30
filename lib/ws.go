@@ -1,5 +1,7 @@
 package goliv
 
+import "golang.org/x/net/websocket"
+
 const (
 	WsContainerId    = "#goliv-container"
 	WsInjectedScript = `
@@ -9,7 +11,7 @@ const (
           var _protocol = /^https/.test(location.protocol) ? 'wss' : 'ws';
           var _port = 1234;
 
-          var _ws = new WebSocket(_protocol + "//" + location.host)
+          var _ws = new WebSocket(_protocol + "//" + location.host + "/ws")
 
           _ws.onmessage = function(ev) {
           	if (ev.data === "reload") {
@@ -22,17 +24,26 @@ const (
   `
 )
 
-type Connecter interface {
+type Closer interface {
 	Close() error
 }
 
 type Client struct {
 	Id   string
-	Conn Connecter
+	Conn Closer
 }
 
 type ClientWrapper struct {
 	Clients []Client
+}
+
+func (cw *ClientWrapper) Connected(conn *websocket.Conn) {
+	cl := Client{
+		Id:   "1",
+		Conn: conn,
+	}
+
+	cw.Add(cl)
 }
 
 func (cw *ClientWrapper) Add(c Client) {

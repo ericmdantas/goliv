@@ -54,7 +54,7 @@ func TestConstantWsInjectedHtml(t *testing.T) {
           var _protocol = /^https/.test(location.protocol) ? 'wss' : 'ws';
           var _port = 1234;
 
-          var _ws = new WebSocket(_protocol + "//" + location.host)
+          var _ws = new WebSocket(_protocol + "//" + location.host + "/ws")
 
           _ws.onmessage = function(ev) {
           	if (ev.data === "reload") {

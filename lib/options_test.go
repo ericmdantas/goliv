@@ -6,7 +6,7 @@ var optDefaut = &Options{
 	NoBrowser:   false,
 	Host:        "127.0.0.1",
 	Secure:      false,
-	Port:        "1307",
+	Port:        ":1308",
 	PathIndex:   "",
 	Quiet:       false,
 	Proxy:       false,
