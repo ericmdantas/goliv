@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/skratchdot/open-golang/open"
+
 	"golang.org/x/net/websocket"
 )
 
@@ -42,7 +43,11 @@ func (s *Server) Start() error {
 
 	fmt.Printf("Server up: %s\n", s.opts.Port)
 
-	open.Run(s.opts.Host)
+	OpenBrowser(s)
 
 	return http.ListenAndServe(":"+s.opts.Port, nil)
+}
+
+func (s *Server) OpenBrowser() error {
+	return open.Run(s.opts.Host)
 }

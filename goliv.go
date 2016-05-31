@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	lib "github.com/ericmdantas/goliv/lib"
 )
@@ -13,6 +13,6 @@ func main() {
 	err := server.Start()
 
 	if err != nil {
-		fmt.Printf("\nOops, something went wrong with the server. Here's the error: %s", err.Error())
+		log.Fatalf("\nOops, something went wrong with the server. Here's the error: %s", err.Error())
 	}
 }
