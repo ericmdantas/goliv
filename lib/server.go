@@ -45,6 +45,10 @@ func (s *Server) Start() error {
 
 	OpenBrowser(s)
 
+	if s.opts.Secure {
+		return http.ListenAndServeTLS(":"+s.opts.Port, "lib/crt/server.crt", "lib/crt/server.key", nil)
+	}
+
 	return http.ListenAndServe(":"+s.opts.Port, nil)
 }
 
