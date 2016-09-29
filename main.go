@@ -10,9 +10,7 @@ func main() {
 	opts := lib.GetOptions()
 	server := lib.NewServer(opts)
 
-	err := server.Start()
-
-	if err != nil {
+	if err := server.Start(); err != nil {
 		log.Fatalf("\nOops, something went wrong with the server. Here's the error: %s", err.Error())
 	}
 }

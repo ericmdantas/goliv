@@ -13,5 +13,5 @@ func InjectScriptWs(contentScript string) string {
 		panic(err)
 	}
 
-	return string(bs) + "abc"
+	return string(bs)
 }
