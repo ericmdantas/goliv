@@ -1,6 +1,6 @@
 package server
 
-func Start() error {
+func Start(opt *Options) error {
 	if err := StartWatcher(); err != nil {
 		return err
 	}

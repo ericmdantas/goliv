@@ -6,15 +6,14 @@ type Options struct {
 	Secure      bool
 	Quiet       bool
 	NoBrowser   bool
-	Only        []string
+	Only        string
 	Ignore      string
 	PathIndex   string
 	Proxy       bool
 	ProxyTarget string
 	ProxyWhen   string
 	Root        string
-	Watch       bool
-	Static      []string
+	Static      string
 	URL         string
 }
 
@@ -35,15 +34,14 @@ func NewOptions() *Options {
 		Secure:      false,
 		Quiet:       false,
 		NoBrowser:   false,
-		Only:        []string{},
+		Only:        "",
 		Ignore:      "",
 		PathIndex:   "",
 		Proxy:       false,
 		ProxyTarget: "",
 		ProxyWhen:   "",
 		Root:        "",
-		Watch:       true,
-		Static:      []string{},
+		Static:      "",
 		URL:         "",
 	}
 }
