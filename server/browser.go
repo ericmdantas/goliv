@@ -4,6 +4,6 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
-func OpenBrowser() error {
-	return open.Start("https://google.com")
+func OpenBrowser(opt *Options) error {
+	return open.Start(opt.URL)
 }

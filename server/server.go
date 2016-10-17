@@ -1,7 +1,11 @@
 package server
 
 func Start(opt *Options) error {
-	if err := StartWatcher(); err != nil {
+	opt.Mount()
+
+	OpenBrowser(opt)
+
+	if err := StartWatcher(opt); err != nil {
 		return err
 	}
 

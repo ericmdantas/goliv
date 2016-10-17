@@ -9,7 +9,7 @@ import (
 	"github.com/radovskyb/watcher"
 )
 
-func StartWatcher() error {
+func StartWatcher(opt *Options) error {
 	var wg sync.WaitGroup
 
 	w := watcher.New()
@@ -37,7 +37,7 @@ func StartWatcher() error {
 		}
 	}()
 
-	if err := w.Add("yo"); err != nil {
+	if err := w.Add(opt.Only); err != nil {
 		return err
 	}
 
