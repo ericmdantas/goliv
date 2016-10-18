@@ -1,7 +1,11 @@
 package server
 
 import (
-	_ "github.com/gorilla/websocket"
+	"github.com/gorilla/websocket"
+)
+
+const (
+	evReload = "reload"
 )
 
 var WSScript = `
@@ -19,3 +23,25 @@ var WSScript = `
 		}());
 	</div>
 `
+
+type WS struct {
+	clients []*websocket.Conn
+}
+
+func (ws *WS) OnConnect(conn *websocket.Conn, cb func()) {
+	ws.clients = append(ws.clients, conn)
+
+	cb()
+}
+
+func (ws *WS) BroadcastReload() {
+	for _, client := range ws.clients {
+		client.WriteMessage(websocket.TextMessage, []byte(evReload))
+	}
+}
+
+func NewWS() *WS {
+	return &WS{
+		clients: []*websocket.Conn{},
+	}
+}
