@@ -20,14 +20,24 @@ var WSScript = `
 	</div>
 `
 
-type WS struct {
-	clients []*websocket.Conn
+type WSSender interface {
+	WriteMessage(messageType int, payload []byte) error
 }
 
-func (ws *WS) OnConnect(conn *websocket.Conn, cb func()) {
+type WS struct {
+	clients []*WSSender
+}
+
+func (ws *WS) OnConnect(conn WSSender, cb func()) {
 	ws.clients = append(ws.clients, conn)
 
 	cb()
+}
+
+func (ws *WS) BroadcastReload() {
+	for _, client := range ws.clients {
+		client.WriteMessage(websocket.TextMessage, []byte("reload"))
+	}
 }
 
 func NewWS() *WS {

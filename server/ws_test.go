@@ -3,14 +3,20 @@ package server
 import (
 	"testing"
 
-	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 )
+
+type conn struct {
+}
+
+func (c conn) WriteMessage(t int, pay []byte) error {
+	return nil
+}
 
 func TestNewWS(t *testing.T) {
 	ws := NewWS()
 
-	assert.Equal(t, []*websocket.Conn{}, ws.clients, "should start with an empty client slice")
+	assert.Equal(t, []WSSender, ws.clients, "should start with an empty client slice")
 }
 
 func TestWSScript(t *testing.T) {
@@ -35,9 +41,21 @@ func TestWSScript(t *testing.T) {
 
 func TestOnConnect(t *testing.T) {
 	ws := NewWS()
-	conn := websocket.Conn{}
 
-	ws.OnConnect(&conn, func() {
+	c := conn{}
+
+	ws.OnConnect(&c, func() {
 
 	})
+}
+
+func TestBroadcastReload(t *testing.T) {
+	ws := NewWS()
+	conn1 := conn{}
+	conn2 := conn{}
+
+	ws.clients = append(ws.clients, &conn1)
+	ws.clients = append(ws.clients, &conn2)
+
+	ws.BroadcastReload()
 }
