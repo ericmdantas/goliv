@@ -9,7 +9,7 @@ var WSScript = `
 		;(function() {
 			"use strict";
 			
-			var ws = new WebSocket("ws://127.0.0.1:986/abc");
+			var ws = new WebSocket("ws://127.0.0.1:986/ws");
 			
 			ws.onmessage = function(ev) {
 				if (ev.data === "reload") {

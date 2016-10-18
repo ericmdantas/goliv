@@ -19,7 +19,7 @@ func TestWSScript(t *testing.T) {
 		;(function() {
 			"use strict";
 			
-			var ws = new WebSocket("ws://127.0.0.1:986/abc");
+			var ws = new WebSocket("ws://127.0.0.1:986/ws");
 			
 			ws.onmessage = function(ev) {
 				if (ev.data === "reload") {
@@ -31,4 +31,13 @@ func TestWSScript(t *testing.T) {
 `
 
 	assert.Contains(t, script, WSScript, "should have the right info for the script")
+}
+
+func TestOnConnect(t *testing.T) {
+	ws := NewWS()
+	conn := websocket.Conn{}
+
+	ws.OnConnect(&conn, func() {
+
+	})
 }
