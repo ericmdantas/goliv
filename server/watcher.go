@@ -9,7 +9,7 @@ import (
 	"github.com/radovskyb/watcher"
 )
 
-func StartWatcher(opt *Options) error {
+func StartWatcher(opt *Options, onChange func()) error {
 	var wg sync.WaitGroup
 
 	w := watcher.New()
@@ -26,10 +26,13 @@ func StartWatcher(opt *Options) error {
 				switch event.EventType {
 				case watcher.EventFileModified:
 					fmt.Println("Modified file:", event.Name())
+					onChange()
 				case watcher.EventFileAdded:
 					fmt.Println("Added file:", event.Name())
+					onChange()
 				case watcher.EventFileDeleted:
 					fmt.Println("Deleted file:", event.Name())
+					onChange()
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)

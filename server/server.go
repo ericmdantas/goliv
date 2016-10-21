@@ -3,6 +3,8 @@ package server
 import (
 	"net/http"
 
+	"golang.org/x/net/websocket"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/standard"
 )
@@ -15,10 +17,6 @@ func Start(opt *Options) error {
 	}
 
 	if err := OpenBrowser(opt); err != nil {
-		return err
-	}
-
-	if err := StartWatcher(opt); err != nil {
 		return err
 	}
 
@@ -38,5 +36,21 @@ func startServer(opt *Options) error {
 		return c.HTML(http.StatusOK, indexHTMLStr)
 	})
 
+	e.GET("/ws", standard.WrapHandler(handleWSConnection(opt)))
+
 	return e.Run(standard.New(opt.Port))
+}
+
+func handleWSConnection(opt *Options) websocket.Handler {
+	onChange := func(conn *websocket.Conn) func() {
+		return func() {
+			conn.Write([]byte("reload"))
+		}
+	}
+
+	return websocket.Handler(func(conn *websocket.Conn) {
+		if err := StartWatcher(opt, onChange(conn)); err != nil {
+			panic(err)
+		}
+	})
 }

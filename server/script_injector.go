@@ -6,7 +6,7 @@ import (
 )
 
 func InjectScript(o *Options) (string, error) {
-	file, err := ioutil.ReadFile(o.PathIndex + "/index.html")
+	file, err := ioutil.ReadFile(o.PathIndex + "index.html")
 
 	if err != nil {
 		return "", err
