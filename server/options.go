@@ -29,7 +29,7 @@ func (o *Options) Mount() {
 
 func NewOptions() *Options {
 	return &Options{
-		Port:        ":1307",
+		Port:        ":1308",
 		Host:        "127.0.0.1",
 		Secure:      false,
 		Quiet:       false,

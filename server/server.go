@@ -1,19 +1,21 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/standard"
-	"github.com/labstack/echo/middleware"
 )
 
 func Start(opt *Options) error {
 	opt.Mount()
 
-	startServer(opt)
-	OpenBrowser(opt)
+	if err := startServer(opt); err != nil {
+		return err
+	}
 
-	if err := InjectScript(opt); err != nil {
-		panic(err)
+	if err := OpenBrowser(opt); err != nil {
+		return err
 	}
 
 	if err := StartWatcher(opt); err != nil {
@@ -26,10 +28,15 @@ func Start(opt *Options) error {
 func startServer(opt *Options) error {
 	e := echo.New()
 
-	e.Use(middleware.Static(""))
-	e.Use(middleware.Static("/" + opt.Only))
+	indexHTMLStr, err := InjectScript(opt)
 
-	e.Run(standard.New(opt.Port))
+	if err != nil {
+		return err
+	}
 
-	return nil
+	e.GET("/", func(c echo.Context) error {
+		return c.HTML(http.StatusOK, indexHTMLStr)
+	})
+
+	return e.Run(standard.New(opt.Port))
 }

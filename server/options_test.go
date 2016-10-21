@@ -9,7 +9,7 @@ import (
 func TestNewOptions(t *testing.T) {
 	o := NewOptions()
 
-	assert.Equal(t, ":1307", o.Port, "default proxy value")
+	assert.Equal(t, ":1308", o.Port, "default proxy value")
 	assert.Equal(t, "127.0.0.1", o.Host, "default host value")
 	assert.Equal(t, false, o.Secure, "default secure value")
 	assert.Equal(t, false, o.Quiet, "default quiet value")
@@ -30,7 +30,7 @@ func TestOptionsMount(t *testing.T) {
 
 	o.Mount()
 
-	assert.Equal(t, "http://127.0.0.1:1307", o.URL, "default mounted value")
+	assert.Equal(t, "http://127.0.0.1:1308", o.URL, "default mounted value")
 
 	o.Host = "abc"
 	o.Port = ":9876"
