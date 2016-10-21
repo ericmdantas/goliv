@@ -5,5 +5,9 @@ import (
 )
 
 func OpenBrowser(opt *Options) error {
+	if opt.NoBrowser {
+		return nil
+	}
+
 	return open.Start(opt.URL)
 }

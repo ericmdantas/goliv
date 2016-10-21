@@ -12,6 +12,10 @@ func Start(opt *Options) error {
 	startServer(opt)
 	OpenBrowser(opt)
 
+	if err := InjectScript(opt); err != nil {
+		panic(err)
+	}
+
 	if err := StartWatcher(opt); err != nil {
 		return err
 	}
