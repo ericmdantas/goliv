@@ -29,6 +29,10 @@ func Start(opt *Options) error {
 func startServer(opt *Options) error {
 	e := echo.New()
 
+	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+		Level: 9,
+	}))
+
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  opt.PathIndex,
 		HTML5: true,
