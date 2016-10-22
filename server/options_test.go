@@ -22,7 +22,8 @@ func TestNewOptions(t *testing.T) {
 	assert.Equal(t, "", o.ProxyWhen, "default proxyWhen value")
 	assert.Equal(t, "", o.Root, "default root value")
 	assert.Equal(t, "", o.Static, "default static value")
-	assert.Equal(t, "", o.URL, "default url value")
+	assert.Equal(t, "", o.HTTPURL, "default HTTPURL value")
+	assert.Equal(t, "", o.WSURL, "default WSURL value")
 }
 
 func TestOptionsMount(t *testing.T) {
@@ -30,14 +31,16 @@ func TestOptionsMount(t *testing.T) {
 
 	o.Mount()
 
-	assert.Equal(t, "http://127.0.0.1:1308", o.URL, "default mounted value")
+	assert.Equal(t, "http://127.0.0.1:1308", o.HTTPURL, "http - default mounted value")
+	assert.Equal(t, "ws://127.0.0.1:1308/ws", o.WSURL, "ws - default mounted value")
 
 	o.Host = "abc"
 	o.Port = ":9876"
 
 	o.Mount()
 
-	assert.Equal(t, "http://abc:9876", o.URL, "custom mounted value - not secure")
+	assert.Equal(t, "http://abc:9876", o.HTTPURL, "http - custom mounted value - not secure")
+	assert.Equal(t, "ws://abc:9876/ws", o.WSURL, "ws - custom mounted value - not secure")
 
 	o.Host = "def"
 	o.Port = ":1234"
@@ -45,5 +48,6 @@ func TestOptionsMount(t *testing.T) {
 
 	o.Mount()
 
-	assert.Equal(t, "https://def:1234", o.URL, "custom mounted value - secure")
+	assert.Equal(t, "https://def:1234", o.HTTPURL, "http - custom mounted value - secure")
+	assert.Equal(t, "wss://def:1234/ws", o.WSURL, "ws - custom mounted value - secure")
 }

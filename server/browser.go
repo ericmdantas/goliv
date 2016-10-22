@@ -7,5 +7,5 @@ func OpenBrowser(opt *Options) error {
 		return nil
 	}
 
-	return open.Start(opt.URL)
+	return open.Start(opt.HTTPURL)
 }

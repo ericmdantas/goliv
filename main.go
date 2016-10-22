@@ -11,7 +11,7 @@ func main() {
 	o := server.NewOptions()
 
 	flag.StringVar(&o.Port, "port", o.Port, "a string beginning with")
-	flag.StringVar(&o.Host, "host", o.Host, "the base of your url")
+	flag.StringVar(&o.Host, "host", o.Host, "the base of your HTTPURL")
 	flag.BoolVar(&o.Secure, "secure", o.Secure, "secure server or not")
 	flag.BoolVar(&o.Quiet, "quiet", o.Quiet, "no log")
 	flag.BoolVar(&o.NoBrowser, "noBrowser", o.NoBrowser, "doesn't open the browser")

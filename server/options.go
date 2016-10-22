@@ -14,17 +14,22 @@ type Options struct {
 	ProxyWhen   string
 	Root        string
 	Static      string
-	URL         string
+
+	HTTPURL string
+	WSURL   string
 }
 
 func (o *Options) Mount() {
 	if o.Secure {
-		o.URL = "https://" + o.Host
+		o.HTTPURL = "https://" + o.Host
+		o.WSURL = "wss://" + o.Host
 	} else {
-		o.URL = "http://" + o.Host
+		o.HTTPURL = "http://" + o.Host
+		o.WSURL = "ws://" + o.Host
 	}
 
-	o.URL += o.Port
+	o.HTTPURL += o.Port
+	o.WSURL += o.Port + "/ws"
 }
 
 func NewOptions() *Options {
@@ -42,6 +47,6 @@ func NewOptions() *Options {
 		ProxyWhen:   "",
 		Root:        "",
 		Static:      "",
-		URL:         "",
+		HTTPURL:     "",
 	}
 }
