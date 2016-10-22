@@ -20,8 +20,7 @@ Please, check if things are working correctly. Also, try the other params and re
 
 
 Todo:
-- Make it work with http/2 (certs are already in place);
-- Implement missing params: port, host, ignore, proxies, watch, root and secure;
+- Implementation missing: proxies and http/2;
 - Implement possibility to work with the `.golivrc` file;
 - Add more tests. 
 

@@ -17,7 +17,7 @@ func TestGolivScript(t *testing.T) {
 			;(function() {
 				"use strict";
 				
-				var ws = new WebSocket("ws://127.0.0.1:1308/ws");
+				var ws = new WebSocket("_WS_");
 				
 				ws.onmessage = function(ev) {
 					if (ev.data === "reload") {
