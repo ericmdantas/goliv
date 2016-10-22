@@ -30,19 +30,19 @@ func (cw *ContentWatcher) Watch(notifyChange func()) error {
 			select {
 			case event := <-w.Event:
 				switch event.EventType {
-				case watcher.EventFileModified:
+				case watcher.Modify:
 					if !cw.options.Quiet {
 						log.Println("Modified file:", event.Name())
 					}
 
 					notifyChange()
-				case watcher.EventFileAdded:
+				case watcher.Add:
 					if !cw.options.Quiet {
 						log.Println("Added file:", event.Name())
 					}
 
 					notifyChange()
-				case watcher.EventFileDeleted:
+				case watcher.Remove:
 					if !cw.options.Quiet {
 						log.Println("Deleted file:", event.Name())
 					}
