@@ -10,6 +10,8 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
+const reloadEvent = "reload"
+
 func Start(opt *Options) error {
 	opt.Mount()
 
@@ -54,7 +56,7 @@ func sendIndex(opt *Options) echo.HandlerFunc {
 func handleWSConnection(opt *Options) websocket.Handler {
 	notifyChange := func(conn *websocket.Conn) func() {
 		return func() {
-			conn.Write([]byte(WSReloadEvent))
+			conn.Write([]byte(reloadEvent))
 		}
 	}
 

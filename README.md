@@ -6,7 +6,7 @@ Like [aliv](https://github.com/ericmdantas/aliv), but written in Go.
 
 ## Disclaimer
 
-This is a work in progress, most of the features are still missing. So, this is still not complete port of [aliv](https://github.com/ericmdantas/aliv) yet.
+This is a work in progress. Most of the features are still missing, so, this is still not complete port of [aliv](https://github.com/ericmdantas/aliv) yet.
 
 If you want to help the development, you can clone the repo and run:
 
@@ -14,9 +14,17 @@ If you want to help the development, you can clone the repo and run:
 $ go run main.go -only=_fixture/ -pathIndex=_fixture/ -noBrowser -quiet
 ```
 
-Go to `http://127.0.0.1:1308` and it'll show and html with the content being served from the `_fixture` folder. Everytime you edit the `index.html`, `app.js` or `style.css`, the page should be refreshed.
+Go to `http://127.0.0.1:1308` (you can open in more than one browser), it'll show a html, which is being served from the `_fixture` folder. Everytime you edit the `index.html`, `app.js` or `style.css`, the browsers should be refreshed - showing the new content.
 
-And check if things are working correctly. Also, try the other params and report some bugs. Thanks!
+Please, check if things are working correctly. Also, try the other params and report some bugs. Thanks!
+
+
+Todo:
+- Make it work with http/2 (certs are already in place);
+- Implement missing params: port, ignore, proxies, watch, root and secure;
+- Implement possibility to work with the `.golivrc` file;
+- Add more tests. 
+
 
 ## What?
 
@@ -39,7 +47,7 @@ $ go get -u github.com/ericmdantas/goliv
 - Refresh all your browsers with each file change;
 - Proxy request/responses;
 - Automagically gzip the response of your server;
-- Use HTTPS by simply setting `secure` to `true`;
+- Use HTTP/2 by simply setting `secure` to `true`;
 - Use less memory/CPU possible.
 
 
@@ -72,12 +80,12 @@ Oh, do you want some specific stuff? Checkout the available <a href="#options">o
 -only                      will only watch for changes in the given path/glob/regex/array
 -ignore                    won't watch for changes in the given path (regex)
 -pathIndex                 change the path to your index.html
---proxy                    uses proxy
---proxyTarget              the http/https server where the proxy will "redirect"
---proxyWhen                when the proxy should be activated; like --pxw /api/*
---root                     set the root to a different folder, like "./src/my/deep/folder/"
---watch                    choose to watch for files change or not
---static                   choose what paths are going to be served
+-proxy                     uses proxy
+-proxyTarget               the http/https server where the proxy will "redirect"
+-proxyWhen                 when the proxy should be activated; like --pxw /api/*
+-root                      set the root to a different folder, like "./src/my/deep/folder/"
+-watch                     choose to watch for files change or not
+-static                    choose what paths are going to be served
 ```
 
 
@@ -102,9 +110,9 @@ By doing that, when running `$ goliv`, it'll get all the options in `.golivrc` a
 But, if you have such file and still use something like `$ goliv -port 9999`, **the cli will have priority** over the file.
 
 
-#### Node module
+#### Go module
 
-```golang
+```go
 import (
     "github.com/ericmdantas/goliv"
 )
@@ -123,20 +131,20 @@ func main() {
 #### Default values
 
 ```
---port          is 1307
---host          is 127.0.0.1
---secure        is false
---quiet         is false
---only          is ".", which means it'll watch everything
---ignore        is ^(node_modules|bower_components|jspm_packages|test|typings|coverage|unit_coverage)
---noBrowser     is false, which means it'll always open the browser on start
---pathIndex     is "", which means it'll look for the index.html in the root
---proxy         is false, which means it'll not look for another server to answer for the /api/, for example
---proxyTarget   is "", no server to be target
---proxyWhen     is "", and it's supposed to be set with something like /api/*
---root          is process.cwd()
---watch         is true
---static        is [root, root + "/path/to/your/index"]
+-port          is 1307
+-host          is 127.0.0.1
+-secure        is false
+-quiet         is false
+-only          is ".", which means it'll watch everything
+-ignore        is ^(node_modules|bower_components|jspm_packages|test|typings|coverage|unit_coverage)
+-noBrowser     is false, which means it'll always open the browser on start
+-pathIndex     is "", which means it'll look for the index.html in the root
+-proxy         is false, which means it'll not look for another server to answer for the /api/, for example
+-proxyTarget   is "", no server to be target
+-proxyWhen     is "", and it's supposed to be set with something like /api/*
+-root          is process.cwd()
+-watch         is true
+-static        is [root, root + "/path/to/your/index"]
 ```
 
 
