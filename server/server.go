@@ -26,13 +26,13 @@ func Start(opt *Options) error {
 func startServer(opt *Options) error {
 	e := echo.New()
 
-	indexHTMLStr, err := InjectScript(opt)
-
-	if err != nil {
-		return err
-	}
-
 	e.GET("/", func(c echo.Context) error {
+		indexHTMLStr, err := InjectScript(opt)
+
+		if err != nil {
+			panic(err)
+		}
+
 		return c.HTML(http.StatusOK, indexHTMLStr)
 	})
 
