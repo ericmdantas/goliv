@@ -14,6 +14,8 @@ If you want to help the development, you can clone the repo and run:
 $ go run main.go -only=_fixture/ -pathIndex=_fixture/ -noBrowser -quiet
 ```
 
+Go to `http://127.0.0.1:1308` and it'll show and html with the content being served from the `_fixture` folder. Everytime you edit the `index.html`, `app.js` or `style.css`, the page should be refreshed.
+
 And check if things are working correctly. Also, try the other params and report some bugs. Thanks!
 
 ## What?
