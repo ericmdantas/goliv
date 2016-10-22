@@ -15,7 +15,7 @@ func main() {
 	flag.BoolVar(&o.Secure, "secure", o.Secure, "secure server or not")
 	flag.BoolVar(&o.Quiet, "quiet", o.Quiet, "no log")
 	flag.BoolVar(&o.NoBrowser, "noBrowser", o.NoBrowser, "doesn't open the browser")
-	flag.StringVar(&o.Only, "only", o.Only, "watchable path")
+	flag.StringVar(&o.Only, "only", o.Only, "watchable paths - separated by comma")
 	flag.StringVar(&o.Ignore, "ignore", o.Ignore, "paths ignored")
 	flag.StringVar(&o.PathIndex, "pathIndex", o.PathIndex, "path to the index.html")
 	flag.BoolVar(&o.Proxy, "proxy", o.Proxy, "if it's working as a reverse proxy or not")

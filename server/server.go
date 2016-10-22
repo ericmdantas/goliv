@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/standard"
+	"github.com/labstack/echo/middleware"
 )
 
 func Start(opt *Options) error {
@@ -26,7 +27,19 @@ func Start(opt *Options) error {
 func startServer(opt *Options) error {
 	e := echo.New()
 
-	e.GET("/", func(c echo.Context) error {
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:  opt.PathIndex,
+		HTML5: true,
+	}))
+
+	e.GET("/", sendIndex(opt))
+	e.GET("/ws", standard.WrapHandler(handleWSConnection(opt)))
+
+	return e.Run(standard.New(opt.Port))
+}
+
+func sendIndex(opt *Options) echo.HandlerFunc {
+	return func(c echo.Context) error {
 		indexHTMLStr, err := InjectScript(opt)
 
 		if err != nil {
@@ -34,11 +47,7 @@ func startServer(opt *Options) error {
 		}
 
 		return c.HTML(http.StatusOK, indexHTMLStr)
-	})
-
-	e.GET("/ws", standard.WrapHandler(handleWSConnection(opt)))
-
-	return e.Run(standard.New(opt.Port))
+	}
 }
 
 func handleWSConnection(opt *Options) websocket.Handler {
