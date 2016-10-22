@@ -26,6 +26,8 @@ var WSScript = `
 	</div>
 `
 
+const WSReloadEvent = "reload"
+
 type WS struct {
 	clients []*websocket.Conn
 }

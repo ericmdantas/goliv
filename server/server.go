@@ -30,6 +30,7 @@ func startServer(opt *Options) error {
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  opt.PathIndex,
 		HTML5: true,
+		Index: "_______", // serve the index by hand
 	}))
 
 	e.GET("/", sendIndex(opt))
@@ -53,7 +54,7 @@ func sendIndex(opt *Options) echo.HandlerFunc {
 func handleWSConnection(opt *Options) websocket.Handler {
 	notifyChange := func(conn *websocket.Conn) func() {
 		return func() {
-			conn.Write([]byte("reload"))
+			conn.Write([]byte(WSReloadEvent))
 		}
 	}
 

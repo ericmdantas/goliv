@@ -36,6 +36,10 @@ func TestWSScript(t *testing.T) {
 	assert.Contains(t, script, WSScript, "should have the right info for the script")
 }
 
+func TestWSReloadEvent(t *testing.T) {
+	assert.Equal(t, "reload", WSReloadEvent, "should have the event name correctly")
+}
+
 func TestOnConnect(t *testing.T) {
 	ws := NewWS()
 
