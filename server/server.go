@@ -42,14 +42,16 @@ func startServer(opt *Options) error {
 }
 
 func handleWSConnection(opt *Options) websocket.Handler {
-	onChange := func(conn *websocket.Conn) func() {
+	notifyChange := func(conn *websocket.Conn) func() {
 		return func() {
 			conn.Write([]byte("reload"))
 		}
 	}
 
 	return websocket.Handler(func(conn *websocket.Conn) {
-		if err := StartWatcher(opt, onChange(conn)); err != nil {
+		cw := NewContentWatcher(opt)
+
+		if err := cw.Watch(notifyChange(conn)); err != nil {
 			panic(err)
 		}
 	})

@@ -1,15 +1,21 @@
 package server
 
 import (
-	"fmt"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/radovskyb/watcher"
 )
 
-func StartWatcher(opt *Options, onChange func()) error {
+type ContentWatcher struct {
+	options           *Options
+	watchablePathsRaw string
+	WatchablePaths    []string
+}
+
+func (cw *ContentWatcher) Watch(notifyChange func()) error {
 	var wg sync.WaitGroup
 
 	w := watcher.New()
@@ -25,14 +31,23 @@ func StartWatcher(opt *Options, onChange func()) error {
 			case event := <-w.Event:
 				switch event.EventType {
 				case watcher.EventFileModified:
-					fmt.Println("Modified file:", event.Name())
-					onChange()
+					if !cw.options.Quiet {
+						log.Println("Modified file:", event.Name())
+					}
+
+					notifyChange()
 				case watcher.EventFileAdded:
-					fmt.Println("Added file:", event.Name())
-					onChange()
+					if !cw.options.Quiet {
+						log.Println("Added file:", event.Name())
+					}
+
+					notifyChange()
 				case watcher.EventFileDeleted:
-					fmt.Println("Deleted file:", event.Name())
-					onChange()
+					if !cw.options.Quiet {
+						log.Println("Deleted file:", event.Name())
+					}
+
+					notifyChange()
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
@@ -40,8 +55,10 @@ func StartWatcher(opt *Options, onChange func()) error {
 		}
 	}()
 
-	if err := w.Add(opt.Only); err != nil {
-		return err
+	for _, path := range cw.WatchablePaths {
+		if err := w.Add(path); err != nil {
+			return err
+		}
 	}
 
 	if err := w.Start(time.Millisecond * 100); err != nil {
@@ -51,4 +68,15 @@ func StartWatcher(opt *Options, onChange func()) error {
 	wg.Wait()
 
 	return nil
+}
+
+func NewContentWatcher(opt *Options) *ContentWatcher {
+	rawPath := opt.Only
+	splitPaths := strings.Split(rawPath, ",")
+
+	return &ContentWatcher{
+		options:           opt,
+		watchablePathsRaw: opt.Only,
+		WatchablePaths:    splitPaths,
+	}
 }
