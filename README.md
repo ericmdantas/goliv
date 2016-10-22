@@ -6,7 +6,15 @@ Like [aliv](https://github.com/ericmdantas/aliv), but written in Go.
 
 ## Disclaimer
 
-This is a work in progress, most of the features are still missing. So, this is still not complete port of [aliv](https://github.com/ericmdantas/aliv) to Go.
+This is a work in progress, most of the features are still missing. So, this is still not complete port of [aliv](https://github.com/ericmdantas/aliv) yet.
+
+If you want to help the development, you can clone the repo and run:
+
+```shell
+$ go run main.go -only=_fixture/ -pathIndex=_fixture/ -noBrowser -quiet
+```
+
+And check if things are working correctly. Also, try the other params and report some bugs. Thanks!
 
 ## What?
 
