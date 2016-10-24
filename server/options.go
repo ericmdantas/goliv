@@ -11,19 +11,19 @@ const (
 )
 
 type Options struct {
-	Port        string
-	Host        string
-	Secure      bool
-	Quiet       bool
-	NoBrowser   bool
-	Only        string
-	Ignore      string
-	PathIndex   string
-	Proxy       bool
-	ProxyTarget string
-	ProxyWhen   string
-	Root        string
-	Static      string
+	Port        string `json:",omitempty"`
+	Host        string `json:",omitempty"`
+	Secure      bool   `json:",omitempty"`
+	Quiet       bool   `json:",omitempty"`
+	NoBrowser   bool   `json:",omitempty"`
+	Only        string `json:",omitempty"`
+	Ignore      string `json:",omitempty"`
+	PathIndex   string `json:",omitempty"`
+	Proxy       bool   `json:",omitempty"`
+	ProxyTarget string `json:",omitempty"`
+	ProxyWhen   string `json:",omitempty"`
+	Root        string `json:",omitempty"`
+	Static      string `json:",omitempty"`
 
 	HTTPURL string
 	WSURL   string

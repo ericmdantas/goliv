@@ -58,71 +58,71 @@ func TestOptionsMount(t *testing.T) {
 
 func TestOptionsAssignBeingOverriddenByCli(t *testing.T) {
 	opt1 := NewOptions()
-	cli1 := NewOptions()
-	file1 := NewOptions()
+	cli1 := Options{}
+	file1 := Options{}
 
 	cli1.Port = "abc"
 	file1.Port = "123"
 
-	opt1.Assign(*file1, *cli1)
+	opt1.Assign(file1, cli1)
 
 	assert.Equal(t, "abc", cli1.Port, "should override the port from the file")
 
 	opt2 := NewOptions()
-	cli2 := NewOptions()
-	file2 := NewOptions()
+	cli2 := Options{}
+	file2 := Options{}
 
 	cli2.Host = "https://abc.com"
 	file2.Host = "yoyo://abc.??"
 
-	opt2.Assign(*file2, *cli2)
+	opt2.Assign(file2, cli2)
 
 	assert.Equal(t, "https://abc.com", cli2.Host, "should override the Host")
 }
 
 func TestOptionsAssignBeingOverriddenByFile(t *testing.T) {
 	opt1 := NewOptions()
-	cli1 := NewOptions()
-	file1 := NewOptions()
+	cli1 := Options{}
+	file1 := Options{}
 
 	file1.Port = "123"
 
-	opt1.Assign(*file1, *cli1)
+	opt1.Assign(file1, cli1)
 
-	assert.Equal(t, "123", cli1.Port, "should override the port from the default values")
+	assert.Equal(t, "123", opt1.Port, "should override the port from the default values")
 
 	opt2 := NewOptions()
-	cli2 := NewOptions()
-	file2 := NewOptions()
+	cli2 := Options{}
+	file2 := Options{}
 
 	file2.Host = "yoyo://abc.??"
 
-	opt2.Assign(*file2, *cli2)
+	opt2.Assign(file2, cli2)
 
-	assert.Equal(t, "yoyo://abc.??", cli2.Host, "should override the Host from the default values")
+	assert.Equal(t, "yoyo://abc.??", opt2.Host, "should override the Host from the default values")
 }
 
 func TestOptionsAssignBeingAdded(t *testing.T) {
 	opt1 := NewOptions()
-	cli1 := NewOptions()
-	file1 := NewOptions()
+	cli1 := Options{}
+	file1 := Options{}
 
 	cli1.Port = "abc"
 	file1.Secure = true
 
-	opt1.Assign(*file1, *cli1)
+	opt1.Assign(file1, cli1)
 
 	assert.Equal(t, "abc", opt1.Port, "should keep the port as it was")
 	assert.Equal(t, true, opt1.Secure, "should add the secure the the options")
 
 	opt2 := NewOptions()
-	cli2 := NewOptions()
-	file2 := NewOptions()
+	cli2 := Options{}
+	file2 := Options{}
 
 	cli2.Host = "https://abc.com"
 	file2.Only = "a,b,c"
 
-	opt2.Assign(*file2, *cli2)
+	opt2.Assign(file2, cli2)
 
 	assert.Equal(t, "https://abc.com", opt2.Host, "should keep the Host")
 	assert.Equal(t, "a,b,c", opt2.Only, "should add only to the option")
