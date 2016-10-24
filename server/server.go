@@ -14,13 +14,13 @@ const reloadEvent = "reload"
 
 func Start(opt Options) error {
 	cliOpt := opt
-	cfgFileOpt, err := parseGolivRc(opt)
+	fileOpt, err := parseGolivRc(opt)
 
 	if err != nil {
 		return err
 	}
 
-	opt.Merge(cliOpt, cfgFileOpt)
+	opt.Assign(fileOpt, cliOpt)
 	opt.Mount()
 
 	if err := startServer(opt); err != nil {

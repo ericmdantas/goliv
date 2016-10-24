@@ -29,27 +29,14 @@ type Options struct {
 	WSURL   string
 }
 
-func (o *Options) Mount() {
-	if o.Secure {
-		o.HTTPURL = "https://" + o.Host
-		o.WSURL = "wss://" + o.Host
-	} else {
-		o.HTTPURL = "http://" + o.Host
-		o.WSURL = "ws://" + o.Host
-	}
-
-	o.HTTPURL += o.Port
-	o.WSURL += o.Port + "/ws"
-}
-
-func (o *Options) Merge(cliOpt, fileOpt Options) error {
-	bCliOpt, err := json.Marshal(cliOpt)
+func (o *Options) Assign(fileOpt, cliOpt Options) error {
+	bFileOpt, err := json.Marshal(fileOpt)
 
 	if err != nil {
 		return err
 	}
 
-	bFileOpt, err := json.Marshal(fileOpt)
+	bCliOpt, err := json.Marshal(cliOpt)
 
 	if err != nil {
 		return err
@@ -64,6 +51,19 @@ func (o *Options) Merge(cliOpt, fileOpt Options) error {
 	}
 
 	return nil
+}
+
+func (o *Options) Mount() {
+	if o.Secure {
+		o.HTTPURL = "https://" + o.Host
+		o.WSURL = "wss://" + o.Host
+	} else {
+		o.HTTPURL = "http://" + o.Host
+		o.WSURL = "ws://" + o.Host
+	}
+
+	o.HTTPURL += o.Port
+	o.WSURL += o.Port + "/ws"
 }
 
 func NewOptions() *Options {
