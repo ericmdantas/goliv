@@ -21,8 +21,6 @@ Please, check if things are working correctly. Also, try the other params and re
 
 Todo:
 - Implementation missing: proxies and http/2;
-- Implement possibility to work with the `.golivrc` file;
-- Add more tests. 
 
 
 ## What?
