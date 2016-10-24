@@ -25,7 +25,7 @@ func main() {
 
 	flag.Parse()
 
-	if err := server.Start(o); err != nil {
+	if err := server.Start(*o); err != nil {
 		log.Fatalln(err)
 	}
 }

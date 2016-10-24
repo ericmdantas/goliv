@@ -32,6 +32,10 @@ func (o *Options) Mount() {
 	o.WSURL += o.Port + "/ws"
 }
 
+func (o *Options) Merge(opt ...Options) Options {
+	return Options{}
+}
+
 func NewOptions() *Options {
 	return &Options{
 		Port:        ":1308",

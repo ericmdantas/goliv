@@ -10,12 +10,16 @@ const (
 	cfgFileName = ".golivrc"
 )
 
-func parseGolivRc(opt *Options) error {
+func parseGolivRc(opt Options) (Options, error) {
 	info, err := ioutil.ReadFile(filepath.Join(opt.Root, cfgFileName))
 
 	if err != nil {
-		return nil
+		return Options{}, err
 	}
 
-	return json.Unmarshal(info, &opt)
+	if err := json.Unmarshal(info, &opt); err != nil {
+		return Options{}, err
+	}
+
+	return opt, nil
 }

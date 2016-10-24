@@ -12,9 +12,15 @@ import (
 
 const reloadEvent = "reload"
 
-func Start(opt *Options) error {
-	parseGolivRc(opt)
+func Start(opt Options) error {
+	cliOpt := opt
+	cfgFileOpt, err := parseGolivRc(opt)
 
+	if err != nil {
+		return err
+	}
+
+	opt.Merge(cliOpt, cfgFileOpt)
 	opt.Mount()
 
 	if err := startServer(opt); err != nil {
@@ -28,7 +34,7 @@ func Start(opt *Options) error {
 	return nil
 }
 
-func startServer(opt *Options) error {
+func startServer(opt Options) error {
 	e := echo.New()
 
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
@@ -47,7 +53,7 @@ func startServer(opt *Options) error {
 	return e.Run(standard.New(opt.Port))
 }
 
-func sendIndex(opt *Options) echo.HandlerFunc {
+func sendIndex(opt Options) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		indexHTMLStr, err := injectScript(opt)
 
@@ -59,7 +65,7 @@ func sendIndex(opt *Options) echo.HandlerFunc {
 	}
 }
 
-func handleWSConnection(opt *Options) websocket.Handler {
+func handleWSConnection(opt Options) websocket.Handler {
 	notifyChange := func(conn *websocket.Conn) func() {
 		return func() {
 			conn.Write([]byte(reloadEvent))
