@@ -1,9 +1,21 @@
 package server
 
 import (
-	_ "io/ioutil"
+	"encoding/json"
+	"io/ioutil"
+	"path/filepath"
 )
 
-func parseGolivRc(opt *Options) *Options {
-	return nil
+const (
+	cfgFileName = ".golivrc"
+)
+
+func parseGolivRc(opt *Options) error {
+	info, err := ioutil.ReadFile(filepath.Join(opt.Root, cfgFileName))
+
+	if err != nil {
+		return nil
+	}
+
+	return json.Unmarshal(info, &opt)
 }

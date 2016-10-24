@@ -13,6 +13,8 @@ import (
 const reloadEvent = "reload"
 
 func Start(opt *Options) error {
+	parseGolivRc(opt)
+
 	opt.Mount()
 
 	if err := startServer(opt); err != nil {
