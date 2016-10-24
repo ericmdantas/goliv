@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net/http"
 
 	"golang.org/x/net/websocket"
@@ -12,15 +13,16 @@ import (
 
 const reloadEvent = "reload"
 
-func Start(opt Options) error {
-	cliOpt := opt
-	fileOpt, err := parseGolivRc(opt)
+func Start(opt *Options) error {
+	cliOpt := *opt
+	defaultOpt := *NewOptions()
+	fileOpt, err := parseGolivRc(*opt)
 
 	if err != nil {
 		return err
 	}
 
-	opt.Assign(fileOpt, cliOpt)
+	opt.Assign(defaultOpt, fileOpt, cliOpt)
 	opt.Mount()
 
 	if err := startServer(opt); err != nil {
@@ -34,7 +36,7 @@ func Start(opt Options) error {
 	return nil
 }
 
-func startServer(opt Options) error {
+func startServer(opt *Options) error {
 	e := echo.New()
 
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
@@ -50,10 +52,12 @@ func startServer(opt Options) error {
 	e.GET("/", sendIndex(opt))
 	e.GET("/ws", standard.WrapHandler(handleWSConnection(opt)))
 
+	log.Printf("Goliv running on %s\n", opt.HTTPURL)
+
 	return e.Run(standard.New(opt.Port))
 }
 
-func sendIndex(opt Options) echo.HandlerFunc {
+func sendIndex(opt *Options) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		indexHTMLStr, err := injectScript(opt)
 
@@ -65,7 +69,7 @@ func sendIndex(opt Options) echo.HandlerFunc {
 	}
 }
 
-func handleWSConnection(opt Options) websocket.Handler {
+func handleWSConnection(opt *Options) websocket.Handler {
 	notifyChange := func(conn *websocket.Conn) func() {
 		return func() {
 			conn.Write([]byte(reloadEvent))

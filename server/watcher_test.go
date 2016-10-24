@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewContentWatcherSimplePath(t *testing.T) {
-	opts := Options{
+	opts := &Options{
 		Only: "abc",
 	}
 
@@ -19,7 +19,7 @@ func TestNewContentWatcherSimplePath(t *testing.T) {
 }
 
 func TestNewContentWatcherComplexPaths(t *testing.T) {
-	opts := Options{
+	opts := &Options{
 		Only: "a,b,c,d,e,f",
 	}
 

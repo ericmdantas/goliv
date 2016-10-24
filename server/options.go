@@ -11,25 +11,31 @@ const (
 )
 
 type Options struct {
-	Port        string `json:",omitempty"`
-	Host        string `json:",omitempty"`
-	Secure      bool   `json:",omitempty"`
-	Quiet       bool   `json:",omitempty"`
-	NoBrowser   bool   `json:",omitempty"`
-	Only        string `json:",omitempty"`
-	Ignore      string `json:",omitempty"`
-	PathIndex   string `json:",omitempty"`
-	Proxy       bool   `json:",omitempty"`
-	ProxyTarget string `json:",omitempty"`
-	ProxyWhen   string `json:",omitempty"`
-	Root        string `json:",omitempty"`
-	Static      string `json:",omitempty"`
+	Port        string `json:"port,omitempty"`
+	Host        string `json:"host,omitempty"`
+	Secure      bool   `json:"secure,omitempty"`
+	Quiet       bool   `json:"quiet,omitempty"`
+	NoBrowser   bool   `json:"noBrowser,omitempty"`
+	Only        string `json:"only,omitempty"`
+	Ignore      string `json:"ignore,omitempty"`
+	PathIndex   string `json:"pathIndex,omitempty"`
+	Proxy       bool   `json:"proxy,omitempty"`
+	ProxyWhen   string `json:"proxyWhen,omitempty"`
+	ProxyTarget string `json:"proxyTarget,omitempty"`
+	Root        string `json:"root,omitempty"`
+	Static      string `json:"static,omitempty"`
 
 	HTTPURL string
 	WSURL   string
 }
 
-func (o *Options) Assign(fileOpt, cliOpt Options) error {
+func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
+	bDefaultValuesOpt, err := json.Marshal(defaultOpt)
+
+	if err != nil {
+		return err
+	}
+
 	bFileOpt, err := json.Marshal(fileOpt)
 
 	if err != nil {
@@ -39,6 +45,10 @@ func (o *Options) Assign(fileOpt, cliOpt Options) error {
 	bCliOpt, err := json.Marshal(cliOpt)
 
 	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(bDefaultValuesOpt, o); err != nil {
 		return err
 	}
 

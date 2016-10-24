@@ -10,7 +10,7 @@ import (
 )
 
 type contentWatcher struct {
-	options           Options
+	options           *Options
 	watchablePathsRaw string
 	WatchablePaths    []string
 }
@@ -70,7 +70,7 @@ func (cw contentWatcher) Watch(notifyChange func()) error {
 	return nil
 }
 
-func newContentWatcher(opt Options) *contentWatcher {
+func newContentWatcher(opt *Options) *contentWatcher {
 	rawPath := opt.Only
 	splitPaths := strings.Split(rawPath, ",")
 

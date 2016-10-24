@@ -26,7 +26,7 @@ var golivScript = `
 	</div>
 `
 
-func injectScript(o Options) (string, error) {
+func injectScript(o *Options) (string, error) {
 	file, err := ioutil.ReadFile(filepath.Join(o.PathIndex, "index.html"))
 
 	if err != nil {
@@ -39,7 +39,7 @@ func injectScript(o Options) (string, error) {
 	return fileWithScript, nil
 }
 
-func openBrowser(opt Options) error {
+func openBrowser(opt *Options) error {
 	if opt.NoBrowser {
 		return nil
 	}
