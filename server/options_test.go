@@ -6,6 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestCfgFileName(t *testing.T) {
+	assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
+}
+
 func TestNewOptions(t *testing.T) {
 	o := NewOptions()
 
@@ -50,4 +54,54 @@ func TestOptionsMount(t *testing.T) {
 
 	assert.Equal(t, "https://def:1234", o.HTTPURL, "http - custom mounted value - secure")
 	assert.Equal(t, "wss://def:1234/ws", o.WSURL, "ws - custom mounted value - secure")
+}
+
+func TestOptionsMergeBeingOverridden(t *testing.T) {
+	opt1 := NewOptions()
+	cli1 := NewOptions()
+	file1 := NewOptions()
+
+	cli1.Port = "abc"
+	file1.Port = "123"
+
+	opt1.Merge(*cli1, *file1)
+
+	assert.Equal(t, "abc", cli1.Port, "should override the port from the file")
+
+	opt2 := NewOptions()
+	cli2 := NewOptions()
+	file2 := NewOptions()
+
+	cli2.Host = "https://abc.com"
+	file2.Host = "yoyo://abc.??"
+
+	opt2.Merge(*cli2, *file2)
+
+	assert.Equal(t, "https://abc.com", cli2.Host, "should override the Host")
+}
+
+func TestOptionsMergeBeingAdded(t *testing.T) {
+	opt1 := NewOptions()
+	cli1 := NewOptions()
+	file1 := NewOptions()
+
+	cli1.Port = "abc"
+	file1.Secure = true
+
+	opt1.Merge(*cli1, *file1)
+
+	assert.Equal(t, "abc", opt1.Port, "should keep the port as it was")
+	assert.Equal(t, true, opt1.Secure, "should add the secure the the options")
+
+	opt2 := NewOptions()
+	cli2 := NewOptions()
+	file2 := NewOptions()
+
+	cli2.Host = "https://abc.com"
+	file2.Only = "a,b,c"
+
+	opt2.Merge(*cli2, *file2)
+
+	assert.Equal(t, "https://abc.com", opt2.Host, "should keep the Host")
+	assert.Equal(t, "a,b,c", opt2.Only, "should add only to the option")
 }

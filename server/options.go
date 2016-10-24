@@ -1,5 +1,15 @@
 package server
 
+import (
+	"encoding/json"
+	"io/ioutil"
+	"path/filepath"
+)
+
+const (
+	cfgFileName = ".golivrc"
+)
+
 type Options struct {
 	Port        string
 	Host        string
@@ -32,8 +42,28 @@ func (o *Options) Mount() {
 	o.WSURL += o.Port + "/ws"
 }
 
-func (o *Options) Merge(opt ...Options) Options {
-	return Options{}
+func (o *Options) Merge(cliOpt, fileOpt Options) error {
+	bCliOpt, err := json.Marshal(cliOpt)
+
+	if err != nil {
+		return err
+	}
+
+	bFileOpt, err := json.Marshal(fileOpt)
+
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(bFileOpt, o); err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(bCliOpt, o); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewOptions() *Options {
@@ -54,4 +84,18 @@ func NewOptions() *Options {
 		HTTPURL:     "",
 		WSURL:       "",
 	}
+}
+
+func parseGolivRc(opt Options) (Options, error) {
+	info, err := ioutil.ReadFile(filepath.Join(opt.Root, cfgFileName))
+
+	if err != nil {
+		return Options{}, err
+	}
+
+	if err := json.Unmarshal(info, &opt); err != nil {
+		return Options{}, err
+	}
+
+	return opt, nil
 }
