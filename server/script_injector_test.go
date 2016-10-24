@@ -6,10 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInjectScript(t *testing.T) {
-	assert.Equal(t, true, true, "a")
-}
-
 func TestGolivScript(t *testing.T) {
 	script := `
 	<div id="goliv-container" style="display: none">

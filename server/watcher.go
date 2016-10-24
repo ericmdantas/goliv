@@ -9,13 +9,13 @@ import (
 	"github.com/radovskyb/watcher"
 )
 
-type ContentWatcher struct {
+type contentWatcher struct {
 	options           *Options
 	watchablePathsRaw string
 	WatchablePaths    []string
 }
 
-func (cw *ContentWatcher) Watch(notifyChange func()) error {
+func (cw *contentWatcher) Watch(notifyChange func()) error {
 	var wg sync.WaitGroup
 
 	w := watcher.New()
@@ -70,11 +70,11 @@ func (cw *ContentWatcher) Watch(notifyChange func()) error {
 	return nil
 }
 
-func NewContentWatcher(opt *Options) *ContentWatcher {
+func newContentWatcher(opt *Options) *contentWatcher {
 	rawPath := opt.Only
 	splitPaths := strings.Split(rawPath, ",")
 
-	return &ContentWatcher{
+	return &contentWatcher{
 		options:           opt,
 		watchablePathsRaw: opt.Only,
 		WatchablePaths:    splitPaths,

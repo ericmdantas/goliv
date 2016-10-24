@@ -11,7 +11,7 @@ func TestNewContentWatcherSimplePath(t *testing.T) {
 		Only: "abc",
 	}
 
-	cw := NewContentWatcher(opts)
+	cw := newContentWatcher(opts)
 
 	assert.Equal(t, opts, cw.options, "should have the same options")
 	assert.Equal(t, "abc", cw.watchablePathsRaw, "should have the same path raw")
@@ -23,7 +23,7 @@ func TestNewContentWatcherComplexPaths(t *testing.T) {
 		Only: "a,b,c,d,e,f",
 	}
 
-	cw := NewContentWatcher(opts)
+	cw := newContentWatcher(opts)
 
 	assert.Equal(t, opts, cw.options, "should have the same options")
 	assert.Equal(t, "a,b,c,d,e,f", cw.watchablePathsRaw, "should have the same path raw")

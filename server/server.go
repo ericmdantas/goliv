@@ -19,7 +19,7 @@ func Start(opt *Options) error {
 		return err
 	}
 
-	if err := OpenBrowser(opt); err != nil {
+	if err := openBrowser(opt); err != nil {
 		return err
 	}
 
@@ -47,7 +47,7 @@ func startServer(opt *Options) error {
 
 func sendIndex(opt *Options) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		indexHTMLStr, err := InjectScript(opt)
+		indexHTMLStr, err := injectScript(opt)
 
 		if err != nil {
 			panic(err)
@@ -65,7 +65,7 @@ func handleWSConnection(opt *Options) websocket.Handler {
 	}
 
 	return websocket.Handler(func(conn *websocket.Conn) {
-		cw := NewContentWatcher(opt)
+		cw := newContentWatcher(opt)
 
 		if err := cw.Watch(notifyChange(conn)); err != nil {
 			panic(err)

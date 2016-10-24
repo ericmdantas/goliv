@@ -48,5 +48,6 @@ func NewOptions() *Options {
 		Root:        "",
 		Static:      "",
 		HTTPURL:     "",
+		WSURL:       "",
 	}
 }

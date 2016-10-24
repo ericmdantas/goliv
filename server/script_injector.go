@@ -24,7 +24,7 @@ var golivScript = `
 	</div>
 `
 
-func InjectScript(o *Options) (string, error) {
+func injectScript(o *Options) (string, error) {
 	file, err := ioutil.ReadFile(filepath.Join(o.PathIndex, "index.html"))
 
 	if err != nil {
