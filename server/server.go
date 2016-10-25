@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 	"net/http"
+	_ "net/http/httputil"
 
 	"golang.org/x/net/websocket"
 
@@ -51,6 +52,16 @@ func startServer(opt *Options) error {
 
 	e.GET("/", sendIndex(opt))
 	e.GET("/ws", standard.WrapHandler(handleWSConnection(opt)))
+
+	/*if opt.Proxy {
+		e.Get(opt.ProxyWhen, func(c echo.Context) error {
+			res := c.Response()
+			req := c.Request()
+			url := URL.Parse(opt.ProxyTarget)
+
+			return httputil.NewSingleHostReverseProxy(url).ServeHTTP(res, req)
+		})
+	}*/
 
 	log.Printf("Goliv running on %s\n", opt.HTTPURL)
 

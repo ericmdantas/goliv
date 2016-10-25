@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
@@ -97,7 +98,13 @@ func NewOptions() *Options {
 }
 
 func parseGolivRc(opt Options) (Options, error) {
-	info, err := ioutil.ReadFile(filepath.Join(opt.Root, cfgFileName))
+	pathGolivRc := filepath.Join(opt.Root, cfgFileName)
+
+	if _, err := os.Stat(pathGolivRc); os.IsNotExist(err) {
+		return Options{}, nil
+	}
+
+	info, err := ioutil.ReadFile(pathGolivRc)
 
 	if err != nil {
 		return Options{}, err
