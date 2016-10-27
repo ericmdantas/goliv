@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	_ "net/http/httputil"
+	"path/filepath"
 
 	"golang.org/x/net/websocket"
 
@@ -46,7 +47,7 @@ func startServer(opt *Options) error {
 	}))
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  opt.Root,
+		Root:  filepath.Join(opt.Root, opt.PathIndex),
 		HTML5: true,
 		Index: "_______", // serve the index by hand
 	}))
