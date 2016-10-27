@@ -45,7 +45,7 @@ func startServer(opt *Options) error {
 	}))
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  opt.PathIndex,
+		Root:  opt.Root,
 		HTML5: true,
 		Index: "_______", // serve the index by hand
 	}))

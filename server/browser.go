@@ -27,7 +27,7 @@ var golivScript = `
 `
 
 func injectScript(o *Options) (string, error) {
-	file, err := ioutil.ReadFile(filepath.Join(o.PathIndex, "index.html"))
+	file, err := ioutil.ReadFile(filepath.Join(o.Root, o.PathIndex, "index.html"))
 
 	if err != nil {
 		return "", err

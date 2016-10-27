@@ -11,16 +11,17 @@ This is a work in progress. Most of the features are still missing, so, this is 
 If you want to help the development, you can clone the repo and run:
 
 ```shell
-$ go run main.go -root=_fixture -only=_fixture -pathIndex=_fixture -noBrowser -quiet
+$ go run main.go -root=_fixture
 ```
 
-Go to `http://127.0.0.1:1308` (you can open in more than one browser), it'll show a html, which is being served from the `_fixture` folder. Everytime you edit the `index.html`, `app.js` or `style.css`, the browsers will be refreshed - showing the new content.
+Go to `http://127.0.0.1:1309` (you can open in more than one browser), it'll show a html, which is being served from the `_fixture` folder. Everytime you edit the `index.html`, `app.js` or `style.css`, the browsers will be refreshed - showing the new content.
 
 Please, check if things are working correctly. Also, try the other params and report some bugs. Thanks!
 
 
 Todo:
-- Implementation missing: proxies and http/2;
+- Proxy;
+- HTTP/2.
 
 
 ## What?
