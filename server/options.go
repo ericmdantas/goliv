@@ -18,7 +18,7 @@ type Options struct {
 	Secure      bool     `json:"secure,omitempty"`
 	Quiet       bool     `json:"quiet,omitempty"`
 	NoBrowser   bool     `json:"noBrowser,omitempty"`
-	Only        []string `json:only,omitempty`
+	Only        []string `json:"only,omitempty"`
 	Ignore      string   `json:"ignore,omitempty"`
 	PathIndex   string   `json:"pathIndex,omitempty"`
 	Proxy       bool     `json:"proxy,omitempty"`
