@@ -10,6 +10,7 @@ import (
 	"golang.org/x/net/websocket"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/engine"
 	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/echo/middleware"
 )
@@ -66,6 +67,14 @@ func startServer(opt *Options) error {
 	}*/
 
 	log.Printf("Goliv running on %s\n", opt.HTTPURL)
+
+	if opt.Secure {
+		return e.Run(standard.WithConfig(engine.Config{
+			Address:     opt.Port,
+			TLSCertFile: "server/crt/server.crt",
+			TLSKeyFile:  "server/crt/server.key",
+		}))
+	}
 
 	return e.Run(standard.New(opt.Port))
 }
