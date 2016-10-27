@@ -18,6 +18,10 @@ func TestDefaultHost(t *testing.T) {
 	assert.Equal(t, "127.0.0.1", defaultHost, "should have the right host value")
 }
 
+func TestInlinePathSeparator(t *testing.T) {
+	assert.Equal(t, ",", inlinePathSeparator, "should have the right path separator value")
+}
+
 func TestNewOptions(t *testing.T) {
 	o := NewOptions()
 

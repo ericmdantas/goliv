@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	cfgFileName = ".golivrc"
-	defaultHost = "127.0.0.1"
-	defaultPort = ":1308"
+	cfgFileName         = ".golivrc"
+	defaultHost         = "127.0.0.1"
+	defaultPort         = ":1308"
+	inlinePathSeparator = ","
 )
 
 type Options struct {
@@ -70,7 +71,7 @@ func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
 	}
 
 	if cliOpt.OnlyCLI != "" {
-		o.Only = strings.Split(o.OnlyCLI, ",")
+		o.Only = strings.Split(o.OnlyCLI, inlinePathSeparator)
 	}
 
 	return nil
@@ -94,7 +95,7 @@ func (o *Options) Parse() {
 	}
 
 	if len(o.Only) == 0 && o.OnlyCLI != "" {
-		o.Only = strings.Split(o.OnlyCLI, ",")
+		o.Only = strings.Split(o.OnlyCLI, inlinePathSeparator)
 	}
 
 	o.HTTPURL += o.Port
