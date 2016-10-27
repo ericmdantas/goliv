@@ -10,6 +10,14 @@ func TestCfgFileName(t *testing.T) {
 	assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
 }
 
+func TestDefaultPort(t *testing.T) {
+	assert.Equal(t, ":1308", defaultPort, "should have the right port value")
+}
+
+func TestDefaultHost(t *testing.T) {
+	assert.Equal(t, "127.0.0.1", defaultHost, "should have the right host value")
+}
+
 func TestNewOptions(t *testing.T) {
 	o := NewOptions()
 

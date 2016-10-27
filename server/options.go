@@ -10,6 +10,8 @@ import (
 
 const (
 	cfgFileName = ".golivrc"
+	defaultHost = "127.0.0.1"
+	defaultPort = ":1308"
 )
 
 type Options struct {
@@ -75,15 +77,12 @@ func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
 }
 
 func (o *Options) Parse() {
-	host := "127.0.0.1"
-	port := ":1308"
-
 	if o.Host == "" {
-		o.Host = host
+		o.Host = defaultHost
 	}
 
 	if o.Port == "" {
-		o.Port = port
+		o.Port = defaultPort
 	}
 
 	if o.Secure {
@@ -104,8 +103,8 @@ func (o *Options) Parse() {
 
 func NewOptions() *Options {
 	return &Options{
-		Port:        ":1308",
-		Host:        "127.0.0.1",
+		Port:        defaultPort,
+		Host:        defaultHost,
 		Secure:      false,
 		Quiet:       false,
 		NoBrowser:   false,
