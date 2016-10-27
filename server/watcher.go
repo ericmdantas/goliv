@@ -2,7 +2,6 @@ package server
 
 import (
 	"log"
-	"strings"
 	"sync"
 	"time"
 
@@ -10,9 +9,8 @@ import (
 )
 
 type contentWatcher struct {
-	options           *Options
-	watchablePathsRaw string
-	WatchablePaths    []string
+	options        *Options
+	WatchablePaths []string
 }
 
 func (cw contentWatcher) Watch(notifyChange func()) error {
@@ -71,12 +69,8 @@ func (cw contentWatcher) Watch(notifyChange func()) error {
 }
 
 func newContentWatcher(opt *Options) *contentWatcher {
-	rawPath := opt.Only
-	splitPaths := strings.Split(rawPath, ",")
-
 	return &contentWatcher{
-		options:           opt,
-		watchablePathsRaw: opt.Only,
-		WatchablePaths:    splitPaths,
+		options:        opt,
+		WatchablePaths: opt.Only,
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const (
@@ -12,20 +13,21 @@ const (
 )
 
 type Options struct {
-	Port        string `json:"port,omitempty"`
-	Host        string `json:"host,omitempty"`
-	Secure      bool   `json:"secure,omitempty"`
-	Quiet       bool   `json:"quiet,omitempty"`
-	NoBrowser   bool   `json:"noBrowser,omitempty"`
-	Only        string `json:"only,omitempty"`
-	Ignore      string `json:"ignore,omitempty"`
-	PathIndex   string `json:"pathIndex,omitempty"`
-	Proxy       bool   `json:"proxy,omitempty"`
-	ProxyWhen   string `json:"proxyWhen,omitempty"`
-	ProxyTarget string `json:"proxyTarget,omitempty"`
-	Root        string `json:"root,omitempty"`
-	Static      string `json:"static,omitempty"`
+	Port        string   `json:"port,omitempty"`
+	Host        string   `json:"host,omitempty"`
+	Secure      bool     `json:"secure,omitempty"`
+	Quiet       bool     `json:"quiet,omitempty"`
+	NoBrowser   bool     `json:"noBrowser,omitempty"`
+	Only        []string `json:only,omitempty`
+	Ignore      string   `json:"ignore,omitempty"`
+	PathIndex   string   `json:"pathIndex,omitempty"`
+	Proxy       bool     `json:"proxy,omitempty"`
+	ProxyWhen   string   `json:"proxyWhen,omitempty"`
+	ProxyTarget string   `json:"proxyTarget,omitempty"`
+	Root        string   `json:"root,omitempty"`
+	Static      string   `json:"static,omitempty"`
 
+	OnlyCLI string
 	HTTPURL string
 	WSURL   string
 }
@@ -61,16 +63,28 @@ func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
 		return err
 	}
 
+	if len(fileOpt.Only) != 0 {
+		o.Only = fileOpt.Only
+	}
+
+	if cliOpt.OnlyCLI != "" {
+		o.Only = strings.Split(o.OnlyCLI, ",")
+	}
+
 	return nil
 }
 
-func (o *Options) Mount() {
+func (o *Options) Parse() {
 	if o.Secure {
 		o.HTTPURL = "https://" + o.Host
 		o.WSURL = "wss://" + o.Host
 	} else {
 		o.HTTPURL = "http://" + o.Host
 		o.WSURL = "ws://" + o.Host
+	}
+
+	if len(o.Only) == 0 && o.OnlyCLI != "" {
+		o.Only = strings.Split(o.OnlyCLI, ",")
 	}
 
 	o.HTTPURL += o.Port
@@ -84,7 +98,8 @@ func NewOptions() *Options {
 		Secure:      false,
 		Quiet:       false,
 		NoBrowser:   false,
-		Only:        "",
+		OnlyCLI:     "",
+		Only:        []string{},
 		Ignore:      "",
 		PathIndex:   "",
 		Proxy:       false,

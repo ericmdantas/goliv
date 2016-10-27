@@ -26,7 +26,7 @@ func Start(opt *Options) error {
 	}
 
 	opt.Assign(defaultOpt, fileOpt, cliOpt)
-	opt.Mount()
+	opt.Parse()
 
 	if err := startServer(opt); err != nil {
 		return err
