@@ -75,6 +75,17 @@ func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
 }
 
 func (o *Options) Parse() {
+	host := "127.0.0.1"
+	port := ":1308"
+
+	if o.Host == "" {
+		o.Host = host
+	}
+
+	if o.Port == "" {
+		o.Port = port
+	}
+
 	if o.Secure {
 		o.HTTPURL = "https://" + o.Host
 		o.WSURL = "wss://" + o.Host

@@ -32,50 +32,31 @@ func TestNewOptions(t *testing.T) {
 }
 
 func TestOptionsParseURL(t *testing.T) {
-	o := NewOptions()
+	for _, v := range tableTestParseURL {
+		o := NewOptions()
 
-	o.Parse()
+		o.Host = v.inHost
+		o.Port = v.inPort
+		o.Secure = v.inSecure
 
-	assert.Equal(t, "http://127.0.0.1:1308", o.HTTPURL, "http - default Parseed value")
-	assert.Equal(t, "ws://127.0.0.1:1308/ws", o.WSURL, "ws - default Parseed value")
+		o.Parse()
 
-	o.Host = "abc"
-	o.Port = ":9876"
-
-	o.Parse()
-
-	assert.Equal(t, "http://abc:9876", o.HTTPURL, "http - custom Parseed value - not secure")
-	assert.Equal(t, "ws://abc:9876/ws", o.WSURL, "ws - custom Parseed value - not secure")
-
-	o.Host = "def"
-	o.Port = ":1234"
-	o.Secure = true
-
-	o.Parse()
-
-	assert.Equal(t, "https://def:1234", o.HTTPURL, "http - custom Parseed value - secure")
-	assert.Equal(t, "wss://def:1234/ws", o.WSURL, "ws - custom Parseed value - secure")
+		assert.Equal(t, v.outHTTPURL, o.HTTPURL, v.descriptionHTTP)
+		assert.Equal(t, v.outWSURL, o.WSURL, v.descriptionWS)
+	}
 }
 
 func TestOptionsParseOnlyPaths(t *testing.T) {
-	o := NewOptions()
+	for _, v := range tableTestParseOnlyPaths {
+		o := NewOptions()
 
-	o.Parse()
+		o.Only = v.inOnly
+		o.OnlyCLI = v.inOnlyCLI
 
-	assert.Equal(t, o.Only, []string{}, "only default value")
+		o.Parse()
 
-	o.OnlyCLI = "a,b,c"
-
-	o.Parse()
-
-	assert.Equal(t, o.Only, []string{"a", "b", "c"}, "should split the path from OnlyCLI")
-
-	o.Only = []string{"x", "y", "z"}
-	o.OnlyCLI = "a"
-
-	o.Parse()
-
-	assert.Equal(t, o.Only, []string{"x", "y", "z"}, "should keep the value set for Only")
+		assert.Equal(t, v.outOnly, o.Only, v.description)
+	}
 }
 
 func TestOptionsAssignBeingTheDefaultValues(t *testing.T) {
@@ -182,4 +163,82 @@ func TestOptionsAssignBeingAdded(t *testing.T) {
 	assert.Equal(t, "https://abc123.com", opt3.Host, "should keep the Host")
 	assert.Equal(t, "x,y,z", opt3.OnlyCLI, "should add OnlyCLI to the option")
 	assert.Equal(t, []string{"x", "y", "z"}, opt3.Only, "should add Only to the option - already parsed")
+}
+
+var tableTestParseURL = []struct {
+	inHost   string
+	inPort   string
+	inSecure bool
+
+	outHTTPURL      string
+	descriptionHTTP string
+
+	outWSURL      string
+	descriptionWS string
+}{
+	{
+		inHost:          "",
+		inPort:          "",
+		inSecure:        false,
+		outHTTPURL:      "http://127.0.0.1:1308",
+		descriptionHTTP: "http - default parsed value",
+		outWSURL:        "ws://127.0.0.1:1308/ws",
+		descriptionWS:   "ws - default value",
+	},
+	{
+		inHost:          "abc",
+		inPort:          ":9876",
+		inSecure:        false,
+		outHTTPURL:      "http://abc:9876",
+		descriptionHTTP: "http - custom parsed value - not secure",
+		outWSURL:        "ws://abc:9876/ws",
+		descriptionWS:   "ws - custom parsed value - not secure",
+	},
+	{
+		inHost:          "def",
+		inPort:          ":1234",
+		inSecure:        true,
+		outHTTPURL:      "https://def:1234",
+		descriptionHTTP: "http - custom parsed value - secure",
+		outWSURL:        "wss://def:1234/ws",
+		descriptionWS:   "ws - default parsed value - secure",
+	},
+}
+
+var tableTestParseOnlyPaths = []struct {
+	inOnly    []string
+	inOnlyCLI string
+
+	outOnly []string
+
+	description string
+}{
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "",
+
+		outOnly:     []string{},
+		description: "only default value",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "a",
+
+		outOnly:     []string{"a"},
+		description: "single onlyCLI value being parsed into Only",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "a,b,c",
+
+		outOnly:     []string{"a", "b", "c"},
+		description: "multiple onlyCLI value being parsed into Only",
+	},
+	{
+		inOnly:    []string{"x", "y", "z"},
+		inOnlyCLI: "a,b,c",
+
+		outOnly:     []string{"x", "y", "z"},
+		description: "Only value being left as it is",
+	},
 }
