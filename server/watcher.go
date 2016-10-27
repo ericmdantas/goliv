@@ -8,12 +8,7 @@ import (
 	"github.com/radovskyb/watcher"
 )
 
-type contentWatcher struct {
-	options        *Options
-	WatchablePaths []string
-}
-
-func (cw contentWatcher) Watch(notifyChange func()) error {
+func watchContent(opt *Options, notifyChange func()) error {
 	var wg sync.WaitGroup
 
 	w := watcher.New()
@@ -29,31 +24,30 @@ func (cw contentWatcher) Watch(notifyChange func()) error {
 			case event := <-w.Event:
 				switch event.Op {
 				case watcher.Create:
-					if !cw.options.Quiet {
+					if !opt.Quiet {
 						log.Println("Created file:", event.Name())
 					}
 
 					notifyChange()
 				case watcher.Write:
-					if !cw.options.Quiet {
+					if !opt.Quiet {
 						log.Println("Changed file:", event.Name())
 					}
 
 					notifyChange()
 				case watcher.Remove:
-					if !cw.options.Quiet {
+					if !opt.Quiet {
 						log.Println("Removed file:", event.Name())
 					}
 
 					notifyChange()
 
 				case watcher.Rename:
-					if !cw.options.Quiet {
+					if !opt.Quiet {
 						log.Println("Renamed file:", event.Name())
 					}
 
 					notifyChange()
-
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
@@ -61,7 +55,7 @@ func (cw contentWatcher) Watch(notifyChange func()) error {
 		}
 	}()
 
-	for _, path := range cw.WatchablePaths {
+	for _, path := range opt.Only {
 		if err := w.Add(path); err != nil {
 			return err
 		}
@@ -74,11 +68,4 @@ func (cw contentWatcher) Watch(notifyChange func()) error {
 	wg.Wait()
 
 	return nil
-}
-
-func newContentWatcher(opt *Options) *contentWatcher {
-	return &contentWatcher{
-		options:        opt,
-		WatchablePaths: opt.Only,
-	}
 }

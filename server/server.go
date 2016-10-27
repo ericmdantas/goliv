@@ -90,9 +90,7 @@ func handleWSConnection(opt *Options) websocket.Handler {
 	}
 
 	return websocket.Handler(func(conn *websocket.Conn) {
-		cw := newContentWatcher(opt)
-
-		if err := cw.Watch(notifyChange(conn)); err != nil {
+		if err := watchContent(opt, notifyChange(conn)); err != nil {
 			panic(err)
 		}
 	})
