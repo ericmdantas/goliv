@@ -41,7 +41,6 @@ func watchContent(opt *Options, notifyChange func()) error {
 					}
 
 					notifyChange()
-
 				case watcher.Rename:
 					if !opt.Quiet {
 						log.Println("Renamed file:", event.Name())
