@@ -1,6 +1,7 @@
 package server
 
 import (
+	"compress/gzip"
 	"log"
 	"net/http"
 	_ "net/http/httputil"
@@ -41,7 +42,7 @@ func startServer(opt *Options) error {
 	e := echo.New()
 
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
-		Level: 9,
+		Level: gzip.BestCompression,
 	}))
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
