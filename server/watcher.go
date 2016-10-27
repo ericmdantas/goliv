@@ -27,25 +27,33 @@ func (cw contentWatcher) Watch(notifyChange func()) error {
 		for {
 			select {
 			case event := <-w.Event:
-				switch event.EventType {
-				case watcher.Modify:
+				switch event.Op {
+				case watcher.Create:
 					if !cw.options.Quiet {
-						log.Println("Modified file:", event.Name())
+						log.Println("Created file:", event.Name())
 					}
 
 					notifyChange()
-				case watcher.Add:
+				case watcher.Write:
 					if !cw.options.Quiet {
-						log.Println("Added file:", event.Name())
+						log.Println("Changed file:", event.Name())
 					}
 
 					notifyChange()
 				case watcher.Remove:
 					if !cw.options.Quiet {
-						log.Println("Deleted file:", event.Name())
+						log.Println("Removed file:", event.Name())
 					}
 
 					notifyChange()
+
+				case watcher.Rename:
+					if !cw.options.Quiet {
+						log.Println("Renamed file:", event.Name())
+					}
+
+					notifyChange()
+
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
