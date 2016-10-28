@@ -103,13 +103,13 @@ func sendIndex(cfg *Config) echo.HandlerFunc {
 	}
 }
 
-func handleWSConnection(cfg *Config) websocket.Handler {
-	notifyChange := func(conn *websocket.Conn) func() {
-		return func() {
-			conn.Write([]byte(reloadEvent))
-		}
+func notifyChange(conn *websocket.Conn) func() {
+	return func() {
+		conn.Write([]byte(reloadEvent))
 	}
+}
 
+func handleWSConnection(cfg *Config) websocket.Handler {
 	return websocket.Handler(func(conn *websocket.Conn) {
 		if err := watchContent(cfg, notifyChange(conn)); err != nil {
 			panic(err)
