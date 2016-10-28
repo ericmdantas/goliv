@@ -2,6 +2,7 @@ package server
 
 import (
 	"compress/gzip"
+	"fmt"
 	"log"
 	"net/http"
 	_ "net/http/httputil"
@@ -20,15 +21,18 @@ const (
 )
 
 func Start(cfg *Config) error {
-	cliOpt := *cfg
 	defaultOpt := *NewConfig()
 	fileOpt, err := parseGolivRc(*cfg)
+	cliOpt := *cfg
 
 	if err != nil {
 		return err
 	}
 
-	cfg.Assign(defaultOpt, fileOpt, cliOpt)
+	if err := cfg.Assign(defaultOpt, fileOpt, cliOpt); err != nil {
+		return fmt.Errorf("There was an error when assigning the properties. %v\n", err)
+	}
+
 	cfg.Parse()
 
 	if err := startServer(cfg); err != nil {
