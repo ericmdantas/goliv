@@ -1,14 +1,12 @@
 package server
 
 import (
-	"io/ioutil"
-	"path/filepath"
 	"strings"
 
 	"github.com/skratchdot/open-golang/open"
 )
 
-var golivScript = `
+const golivScript = `
 	<div id="goliv-container" style="display: none">
 		<script>	
 			;(function() {
@@ -27,13 +25,7 @@ var golivScript = `
 `
 
 func injectScript(o *Options) (string, error) {
-	file, err := ioutil.ReadFile(filepath.Join(o.Root, o.PathIndex, "index.html"))
-
-	if err != nil {
-		return "", err
-	}
-
-	fileWithScript := strings.Replace(string(file), "</body>", golivScript+"</body>", -1)
+	fileWithScript := strings.Replace(string(o.indexHTML), "</body>", golivScript+"</body>", -1)
 	fileWithScript = strings.Replace(fileWithScript, "_WS_", o.WSURL, -1)
 
 	return fileWithScript, nil

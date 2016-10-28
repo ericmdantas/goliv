@@ -81,6 +81,10 @@ func startServer(opt *Options) error {
 
 func sendIndex(opt *Options) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		if err := opt.readIndexHTML(); err != nil {
+			panic(err)
+		}
+
 		indexHTMLStr, err := injectScript(opt)
 
 		if err != nil {

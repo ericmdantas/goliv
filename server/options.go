@@ -33,6 +33,8 @@ type Options struct {
 	OnlyCLI string
 	HTTPURL string
 	WSURL   string
+
+	indexHTML []byte
 }
 
 func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
@@ -100,6 +102,18 @@ func (o *Options) Parse() {
 
 	o.HTTPURL += o.Port
 	o.WSURL += o.Port + "/ws"
+}
+
+func (o *Options) readIndexHTML() error {
+	indexHTMLInfo, err := ioutil.ReadFile(filepath.Join(o.Root, o.PathIndex, "index.html"))
+
+	if err != nil {
+		return err
+	}
+
+	o.indexHTML = indexHTMLInfo
+
+	return nil
 }
 
 func NewOptions() *Options {
