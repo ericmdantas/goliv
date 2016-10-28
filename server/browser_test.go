@@ -33,7 +33,7 @@ func TestInjectScript(t *testing.T) {
 	o := NewOptions()
 
 	o.Parse()
-	o.indexHTML = []byte(`
+	o.indexHTMLContent = []byte(`
 	!!!<body></body>???
 `)
 

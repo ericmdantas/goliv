@@ -25,7 +25,7 @@ const golivScript = `
 `
 
 func injectScript(o *Options) (string, error) {
-	fileWithScript := strings.Replace(string(o.indexHTML), "</body>", golivScript+"</body>", -1)
+	fileWithScript := strings.Replace(string(o.indexHTMLContent), "</body>", golivScript+"</body>", -1)
 	fileWithScript = strings.Replace(fileWithScript, "_WS_", o.WSURL, -1)
 
 	return fileWithScript, nil

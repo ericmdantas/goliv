@@ -1,6 +1,7 @@
 package server
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,6 +42,9 @@ func TestNewOptions(t *testing.T) {
 	assert.Equal(t, "", o.Static, "default static value")
 	assert.Equal(t, "", o.HTTPURL, "default HTTPURL value")
 	assert.Equal(t, "", o.WSURL, "default WSURL value")
+	assert.Equal(t, "", o.indexHTMLPath, "default index.html path")
+	assert.Equal(t, []byte{}, o.indexHTMLContent, "default index.html content value")
+	assert.Nil(t, o.indexHTMLFile)
 }
 
 func TestOptionsParseURL(t *testing.T) {
@@ -68,6 +72,19 @@ func TestOptionsParseOnlyPaths(t *testing.T) {
 		o.Parse()
 
 		assert.Equal(t, v.outOnly, o.Only, v.description)
+	}
+}
+
+func TestOptionsParseIndexHTMLPathInfo(t *testing.T) {
+	for _, v := range tableTestParseIndexHTMLPathInfo {
+		o := NewOptions()
+
+		o.Root = v.inRoot
+		o.PathIndex = v.inPathIndex
+
+		o.Parse()
+
+		assert.Equal(t, v.outIndexHTMLPath, o.indexHTMLPath, v.description)
 	}
 }
 
@@ -252,5 +269,37 @@ var tableTestParseOnlyPaths = []struct {
 
 		outOnly:     []string{"x", "y", "z"},
 		description: "Only value being left as it is",
+	},
+}
+
+var tableTestParseIndexHTMLPathInfo = []struct {
+	inRoot           string
+	inPathIndex      string
+	outIndexHTMLPath string
+	description      string
+}{
+	{
+		inRoot:           "",
+		inPathIndex:      "",
+		outIndexHTMLPath: "index.html",
+		description:      "should have the index.html in the root of the app",
+	},
+	{
+		inRoot:           "abc",
+		inPathIndex:      "",
+		outIndexHTMLPath: filepath.Join("", "abc", "index.html"),
+		description:      "should have the index.html in the shallow folder - only root defined",
+	},
+	{
+		inRoot:           "",
+		inPathIndex:      "cde",
+		outIndexHTMLPath: filepath.Join("", "cde", "index.html"),
+		description:      "should have the index.html in the shallow folder - only pathIndex defined",
+	},
+	{
+		inRoot:           "abc",
+		inPathIndex:      "cde",
+		outIndexHTMLPath: filepath.Join("", "abc", "cde", "index.html"),
+		description:      "should have the index.html in deep folders - both root and pathIndex are defined",
 	},
 }

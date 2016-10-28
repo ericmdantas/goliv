@@ -15,7 +15,9 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-const reloadEvent = "reload"
+const (
+	reloadEvent = "reload"
+)
 
 func Start(opt *Options) error {
 	cliOpt := *opt

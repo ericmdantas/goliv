@@ -34,7 +34,9 @@ type Options struct {
 	HTTPURL string
 	WSURL   string
 
-	indexHTML []byte
+	indexHTMLPath    string
+	indexHTMLContent []byte
+	indexHTMLFile    *os.File
 }
 
 func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
@@ -102,16 +104,18 @@ func (o *Options) Parse() {
 
 	o.HTTPURL += o.Port
 	o.WSURL += o.Port + "/ws"
+
+	o.indexHTMLPath = filepath.Join(o.Root, o.PathIndex, "index.html")
 }
 
 func (o *Options) readIndexHTML() error {
-	indexHTMLInfo, err := ioutil.ReadFile(filepath.Join(o.Root, o.PathIndex, "index.html"))
+	indexHTMLInfo, err := ioutil.ReadFile(o.indexHTMLPath)
 
 	if err != nil {
 		return err
 	}
 
-	o.indexHTML = indexHTMLInfo
+	o.indexHTMLContent = indexHTMLInfo
 
 	return nil
 }
@@ -132,8 +136,13 @@ func NewOptions() *Options {
 		ProxyWhen:   "",
 		Root:        "",
 		Static:      "",
-		HTTPURL:     "",
-		WSURL:       "",
+
+		HTTPURL: "",
+		WSURL:   "",
+
+		indexHTMLPath:    "",
+		indexHTMLContent: []byte{},
+		indexHTMLFile:    nil,
 	}
 }
 
