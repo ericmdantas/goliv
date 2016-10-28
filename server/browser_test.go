@@ -30,10 +30,10 @@ func TestGolivScript(t *testing.T) {
 }
 
 func TestInjectScript(t *testing.T) {
-	o := NewOptions()
+	cfg := NewConfig()
 
-	o.Parse()
-	o.indexHTMLContent = []byte(`
+	cfg.Parse()
+	cfg.indexHTMLContent = []byte(`
 	!!!<body></body>???
 `)
 
@@ -55,7 +55,7 @@ func TestInjectScript(t *testing.T) {
 		</div></body>???
 `
 
-	indexWithScriptInjected, err := injectScript(o)
+	indexWithScriptInjected, err := injectScript(cfg)
 
 	if err != nil {
 		assert.Fail(t, "error injecting the script")

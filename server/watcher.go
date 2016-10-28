@@ -8,7 +8,7 @@ import (
 	"github.com/radovskyb/watcher"
 )
 
-func watchContent(opt *Options, notifyChange func()) error {
+func watchContent(cfg *Config, notifyChange func()) error {
 	var wg sync.WaitGroup
 
 	w := watcher.New()
@@ -24,25 +24,25 @@ func watchContent(opt *Options, notifyChange func()) error {
 			case event := <-w.Event:
 				switch event.Op {
 				case watcher.Create:
-					if !opt.Quiet {
+					if !cfg.Quiet {
 						log.Println("Created file:", event.Name())
 					}
 
 					notifyChange()
 				case watcher.Write:
-					if !opt.Quiet {
+					if !cfg.Quiet {
 						log.Println("Changed file:", event.Name())
 					}
 
 					notifyChange()
 				case watcher.Remove:
-					if !opt.Quiet {
+					if !cfg.Quiet {
 						log.Println("Removed file:", event.Name())
 					}
 
 					notifyChange()
 				case watcher.Rename:
-					if !opt.Quiet {
+					if !cfg.Quiet {
 						log.Println("Renamed file:", event.Name())
 					}
 
@@ -54,7 +54,7 @@ func watchContent(opt *Options, notifyChange func()) error {
 		}
 	}()
 
-	for _, path := range opt.Only {
+	for _, path := range cfg.Only {
 		if err := w.Add(path); err != nil {
 			return err
 		}

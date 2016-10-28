@@ -19,30 +19,30 @@ const (
 	reloadEvent = "reload"
 )
 
-func Start(opt *Options) error {
-	cliOpt := *opt
-	defaultOpt := *NewOptions()
-	fileOpt, err := parseGolivRc(*opt)
+func Start(cfg *Config) error {
+	cliOpt := *cfg
+	defaultOpt := *NewConfig()
+	fileOpt, err := parseGolivRc(*cfg)
 
 	if err != nil {
 		return err
 	}
 
-	opt.Assign(defaultOpt, fileOpt, cliOpt)
-	opt.Parse()
+	cfg.Assign(defaultOpt, fileOpt, cliOpt)
+	cfg.Parse()
 
-	if err := startServer(opt); err != nil {
+	if err := startServer(cfg); err != nil {
 		return err
 	}
 
-	if err := openBrowser(opt); err != nil {
+	if err := openBrowser(cfg); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func startServer(opt *Options) error {
+func startServer(cfg *Config) error {
 	e := echo.New()
 
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
@@ -50,44 +50,44 @@ func startServer(opt *Options) error {
 	}))
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  filepath.Join(opt.Root, opt.PathIndex),
+		Root:  filepath.Join(cfg.Root, cfg.PathIndex),
 		HTML5: true,
 		Index: "_______", // serve the index by hand
 	}))
 
-	e.GET("/", sendIndex(opt))
-	e.GET("/ws", standard.WrapHandler(handleWSConnection(opt)))
+	e.GET("/", sendIndex(cfg))
+	e.GET("/ws", standard.WrapHandler(handleWSConnection(cfg)))
 
-	/*if opt.Proxy {
-		e.Get(opt.ProxyWhen, func(c echo.Context) error {
+	/*if cfg.Proxy {
+		e.Get(cfg.ProxyWhen, func(c echo.Context) error {
 			res := c.Response()
 			req := c.Request()
-			url := URL.Parse(opt.ProxyTarget)
+			url := URL.Parse(cfg.ProxyTarget)
 
 			return httputil.NewSingleHostReverseProxy(url).ServeHTTP(res, req)
 		})
 	}*/
 
-	log.Printf("Goliv running on %s\n", opt.HTTPURL)
+	log.Printf("Goliv running on %s\n", cfg.HTTPURL)
 
-	if opt.Secure {
+	if cfg.Secure {
 		return e.Run(standard.WithConfig(engine.Config{
-			Address:     opt.Port,
+			Address:     cfg.Port,
 			TLSCertFile: "server/crt/server.crt",
 			TLSKeyFile:  "server/crt/server.key",
 		}))
 	}
 
-	return e.Run(standard.New(opt.Port))
+	return e.Run(standard.New(cfg.Port))
 }
 
-func sendIndex(opt *Options) echo.HandlerFunc {
+func sendIndex(cfg *Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if err := opt.readIndexHTML(); err != nil {
+		if err := cfg.readIndexHTML(); err != nil {
 			panic(err)
 		}
 
-		indexHTMLStr, err := injectScript(opt)
+		indexHTMLStr, err := injectScript(cfg)
 
 		if err != nil {
 			panic(err)
@@ -97,7 +97,7 @@ func sendIndex(opt *Options) echo.HandlerFunc {
 	}
 }
 
-func handleWSConnection(opt *Options) websocket.Handler {
+func handleWSConnection(cfg *Config) websocket.Handler {
 	notifyChange := func(conn *websocket.Conn) func() {
 		return func() {
 			conn.Write([]byte(reloadEvent))
@@ -105,7 +105,7 @@ func handleWSConnection(opt *Options) websocket.Handler {
 	}
 
 	return websocket.Handler(func(conn *websocket.Conn) {
-		if err := watchContent(opt, notifyChange(conn)); err != nil {
+		if err := watchContent(cfg, notifyChange(conn)); err != nil {
 			panic(err)
 		}
 	})

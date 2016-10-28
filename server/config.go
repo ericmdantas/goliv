@@ -15,7 +15,7 @@ const (
 	inlinePathSeparator = ","
 )
 
-type Options struct {
+type Config struct {
 	Port        string   `json:"port,omitempty"`
 	Host        string   `json:"host,omitempty"`
 	Secure      bool     `json:"secure,omitempty"`
@@ -39,7 +39,7 @@ type Options struct {
 	indexHTMLFile    *os.File
 }
 
-func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
+func (cfg *Config) Assign(defaultOpt, fileOpt, cliOpt Config) error {
 	bDefaultValuesOpt, err := json.Marshal(defaultOpt)
 
 	if err != nil {
@@ -58,70 +58,70 @@ func (o *Options) Assign(defaultOpt, fileOpt, cliOpt Options) error {
 		return err
 	}
 
-	if err := json.Unmarshal(bDefaultValuesOpt, o); err != nil {
+	if err := json.Unmarshal(bDefaultValuesOpt, cfg); err != nil {
 		return err
 	}
 
-	if err := json.Unmarshal(bFileOpt, o); err != nil {
+	if err := json.Unmarshal(bFileOpt, cfg); err != nil {
 		return err
 	}
 
-	if err := json.Unmarshal(bCliOpt, o); err != nil {
+	if err := json.Unmarshal(bCliOpt, cfg); err != nil {
 		return err
 	}
 
 	if len(fileOpt.Only) != 0 {
-		o.Only = fileOpt.Only
+		cfg.Only = fileOpt.Only
 	}
 
 	if cliOpt.OnlyCLI != "" {
-		o.Only = strings.Split(o.OnlyCLI, inlinePathSeparator)
+		cfg.Only = strings.Split(cfg.OnlyCLI, inlinePathSeparator)
 	}
 
 	return nil
 }
 
-func (o *Options) Parse() {
-	if o.Host == "" {
-		o.Host = defaultHost
+func (cfg *Config) Parse() {
+	if cfg.Host == "" {
+		cfg.Host = defaultHost
 	}
 
-	if o.Port == "" {
-		o.Port = defaultPort
+	if cfg.Port == "" {
+		cfg.Port = defaultPort
 	}
 
-	if o.Secure {
-		o.HTTPURL = "https://" + o.Host
-		o.WSURL = "wss://" + o.Host
+	if cfg.Secure {
+		cfg.HTTPURL = "https://" + cfg.Host
+		cfg.WSURL = "wss://" + cfg.Host
 	} else {
-		o.HTTPURL = "http://" + o.Host
-		o.WSURL = "ws://" + o.Host
+		cfg.HTTPURL = "http://" + cfg.Host
+		cfg.WSURL = "ws://" + cfg.Host
 	}
 
-	if len(o.Only) == 0 && o.OnlyCLI != "" {
-		o.Only = strings.Split(o.OnlyCLI, inlinePathSeparator)
+	if len(cfg.Only) == 0 && cfg.OnlyCLI != "" {
+		cfg.Only = strings.Split(cfg.OnlyCLI, inlinePathSeparator)
 	}
 
-	o.HTTPURL += o.Port
-	o.WSURL += o.Port + "/ws"
+	cfg.HTTPURL += cfg.Port
+	cfg.WSURL += cfg.Port + "/ws"
 
-	o.indexHTMLPath = filepath.Join(o.Root, o.PathIndex, "index.html")
+	cfg.indexHTMLPath = filepath.Join(cfg.Root, cfg.PathIndex, "index.html")
 }
 
-func (o *Options) readIndexHTML() error {
-	indexHTMLInfo, err := ioutil.ReadFile(o.indexHTMLPath)
+func (cfg *Config) readIndexHTML() error {
+	indexHTMLInfo, err := ioutil.ReadFile(cfg.indexHTMLPath)
 
 	if err != nil {
 		return err
 	}
 
-	o.indexHTMLContent = indexHTMLInfo
+	cfg.indexHTMLContent = indexHTMLInfo
 
 	return nil
 }
 
-func NewOptions() *Options {
-	return &Options{
+func NewConfig() *Config {
+	return &Config{
 		Port:        defaultPort,
 		Host:        defaultHost,
 		Secure:      false,
@@ -146,22 +146,22 @@ func NewOptions() *Options {
 	}
 }
 
-func parseGolivRc(opt Options) (Options, error) {
-	pathGolivRc := filepath.Join(opt.Root, cfgFileName)
+func parseGolivRc(cfg Config) (Config, error) {
+	pathGolivRc := filepath.Join(cfg.Root, cfgFileName)
 
 	if _, err := os.Stat(pathGolivRc); os.IsNotExist(err) {
-		return Options{}, nil
+		return Config{}, nil
 	}
 
 	info, err := ioutil.ReadFile(pathGolivRc)
 
 	if err != nil {
-		return Options{}, err
+		return Config{}, err
 	}
 
-	if err := json.Unmarshal(info, &opt); err != nil {
-		return Options{}, err
+	if err := json.Unmarshal(info, &cfg); err != nil {
+		return Config{}, err
 	}
 
-	return opt, nil
+	return cfg, nil
 }

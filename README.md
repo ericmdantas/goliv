@@ -61,10 +61,10 @@ $ goliv
 
 There you go, all running!
 
-Oh, do you want some specific stuff? Checkout the available <a href="#options">options</a>.
+Oh, do you want some specific stuff? Checkout the available <a href="#config">config</a>.
 
 
-## Options
+## Config
 
 #### CLI
 
@@ -89,7 +89,7 @@ Oh, do you want some specific stuff? Checkout the available <a href="#options">o
 
 #### .golivrc
 
-All the <a href="#options">options</a> being used on the `CLI` can be added to the `.golivrc` file, like this:
+All the <a href="#config">config</a> being used on the `CLI` can be added to the `.golivrc` file, like this:
 
 ```json
 {
@@ -103,7 +103,7 @@ All the <a href="#options">options</a> being used on the `CLI` can be added to t
 }
 ```
 
-By doing that, when running `$ goliv`, it'll get all the options in `.golivrc` and use it.
+By doing that, when running `$ goliv`, it'll get all the config in `.golivrc` and use it.
 
 But, if you have such file and still use something like `$ goliv -port 9999`, **the cli will have priority** over the file.
 
@@ -116,11 +116,11 @@ import (
 )
 
 func main() {
-     options := goliv.NewOptions()
+     cfg := goliv.NewConfig()
 
     // yes, that easy - now your browser will open 
     // and it'll be refreshed every time a file change
-     if err := goliv.Start(options); err != nil {
+     if err := goliv.Start(cfg); err != nil {
          panic(err)
      }
 }

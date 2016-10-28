@@ -24,17 +24,17 @@ const golivScript = `
 	</div>
 `
 
-func injectScript(o *Options) (string, error) {
-	fileWithScript := strings.Replace(string(o.indexHTMLContent), "</body>", golivScript+"</body>", -1)
-	fileWithScript = strings.Replace(fileWithScript, "_WS_", o.WSURL, -1)
+func injectScript(cfg *Config) (string, error) {
+	fileWithScript := strings.Replace(string(cfg.indexHTMLContent), "</body>", golivScript+"</body>", -1)
+	fileWithScript = strings.Replace(fileWithScript, "_WS_", cfg.WSURL, -1)
 
 	return fileWithScript, nil
 }
 
-func openBrowser(opt *Options) error {
-	if opt.NoBrowser {
+func openBrowser(cfg *Config) error {
+	if cfg.NoBrowser {
 		return nil
 	}
 
-	return open.Start(opt.HTTPURL)
+	return open.Start(cfg.HTTPURL)
 }
