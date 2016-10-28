@@ -35,18 +35,20 @@ func Start(cfg *Config) error {
 
 	cfg.Parse()
 
-	if err := startServer(cfg); err != nil {
-		return err
+	s := server{
+		cfg: cfg,
 	}
 
-	if err := openBrowser(cfg); err != nil {
-		return err
-	}
-
-	return nil
+	return s.start(func() error {
+		return openBrowser(s.cfg)
+	})
 }
 
-func startServer(cfg *Config) error {
+type server struct {
+	cfg *Config
+}
+
+func (s *server) start(cbServerReady func() error) error {
 	e := echo.New()
 
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
@@ -54,13 +56,13 @@ func startServer(cfg *Config) error {
 	}))
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  filepath.Join(cfg.Root, cfg.PathIndex),
+		Root:  filepath.Join(s.cfg.Root, s.cfg.PathIndex),
 		HTML5: true,
 		Index: "_______", // serve the index by hand
 	}))
 
-	e.GET("/", sendIndex(cfg))
-	e.GET("/ws", standard.WrapHandler(handleWSConnection(cfg)))
+	e.GET("/", s.sendIndex())
+	e.GET("/ws", standard.WrapHandler(s.handleWSConnection()))
 
 	/*if cfg.Proxy {
 		e.Get(cfg.ProxyWhen, func(c echo.Context) error {
@@ -72,28 +74,40 @@ func startServer(cfg *Config) error {
 		})
 	}*/
 
-	log.Printf("Goliv running on %s\n", cfg.HTTPURL)
+	log.Printf("Goliv running on %s\n", s.cfg.HTTPURL)
 
-	if cfg.Secure {
-		return e.Run(standard.WithConfig(engine.Config{
-			Address:     cfg.Port,
+	if err := cbServerReady(); err != nil {
+		return err
+	}
+
+	if s.cfg.Secure {
+		err := e.Run(standard.WithConfig(engine.Config{
+			Address:     s.cfg.Port,
 			TLSCertFile: "server/crt/server.crt",
 			TLSKeyFile:  "server/crt/server.key",
 		}))
+
+		if err != nil {
+			return err
+		}
 	}
 
-	return e.Run(standard.New(cfg.Port))
+	if err := e.Run(standard.New(s.cfg.Port)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func sendIndex(cfg *Config) echo.HandlerFunc {
+func (s *server) sendIndex() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		f := newIndexFile(cfg)
+		f := newIndexFile(s.cfg)
 
-		if err := cfg.readIndexHTML(f); err != nil {
+		if err := s.cfg.readIndexHTML(f); err != nil {
 			panic(err)
 		}
 
-		indexHTMLStr, err := injectScript(cfg)
+		indexHTMLStr, err := injectScript(s.cfg)
 
 		if err != nil {
 			panic(err)
@@ -103,16 +117,16 @@ func sendIndex(cfg *Config) echo.HandlerFunc {
 	}
 }
 
-func notifyChange(conn *websocket.Conn) func() {
-	return func() {
-		conn.Write([]byte(reloadEvent))
-	}
-}
-
-func handleWSConnection(cfg *Config) websocket.Handler {
+func (s *server) handleWSConnection() websocket.Handler {
 	return websocket.Handler(func(conn *websocket.Conn) {
-		if err := watchContent(cfg, notifyChange(conn)); err != nil {
+		if err := watchContent(s.cfg, s.notifyChange(conn)); err != nil {
 			panic(err)
 		}
 	})
+}
+
+func (s *server) notifyChange(conn *websocket.Conn) func() {
+	return func() {
+		conn.Write([]byte(reloadEvent))
+	}
 }
