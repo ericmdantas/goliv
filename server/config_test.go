@@ -1,11 +1,21 @@
 package server
 
 import (
+	"errors"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+type myIndexFileMock struct {
+	info string
+	err  error
+}
+
+func (m myIndexFileMock) readIndexHTML() ([]byte, error) {
+	return []byte(m.info), m.err
+}
 
 func TestCfgFileName(t *testing.T) {
 	assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
@@ -194,6 +204,22 @@ func TestConfigAssignBeingAdded(t *testing.T) {
 	assert.Equal(t, []string{"x", "y", "z"}, opt3.Only, "should add Only to the option - already parsed")
 }
 
+func TestReadIndexHTML(t *testing.T) {
+	for _, v := range tableTestReadIndexHTML {
+		m := myIndexFileMock{v.inInfo, v.inError}
+
+		cfg := NewConfig()
+		err := cfg.readIndexHTML(m)
+
+		if (err != nil && v.outError != nil) && (err.Error() != v.outError.Error()) {
+			assert.Fail(t, "should not fail now")
+		}
+
+		assert.Equal(t, v.outInfo, cfg.indexHTMLContent, v.description)
+		assert.Equal(t, v.outError, err, v.description)
+	}
+}
+
 var tableTestParseURL = []struct {
 	inHost   string
 	inPort   string
@@ -301,5 +327,28 @@ var tableTestParseIndexHTMLPathInfo = []struct {
 		inPathIndex:      "cde",
 		outIndexHTMLPath: filepath.Join("", "abc", "cde", "index.html"),
 		description:      "should have the index.html in deep folders - both root and pathIndex are defined",
+	},
+}
+
+var tableTestReadIndexHTML = []struct {
+	inInfo      string
+	inError     error
+	outInfo     []byte
+	outError    error
+	description string
+}{
+	{
+		inInfo:      "abc",
+		inError:     nil,
+		outInfo:     []byte("abc"),
+		outError:    nil,
+		description: "should return the []byte correctly",
+	},
+	{
+		inInfo:      "",
+		inError:     errors.New("erro"),
+		outInfo:     []byte(""),
+		outError:    errors.New("erro"),
+		description: "should return the error correctly",
 	},
 }

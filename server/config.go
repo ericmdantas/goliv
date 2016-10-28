@@ -108,8 +108,8 @@ func (cfg *Config) Parse() {
 	cfg.indexHTMLPath = filepath.Join(cfg.Root, cfg.PathIndex, "index.html")
 }
 
-func (cfg *Config) readIndexHTML() error {
-	indexHTMLInfo, err := ioutil.ReadFile(cfg.indexHTMLPath)
+func (cfg *Config) readIndexHTML(f IndexFileReader) error {
+	indexHTMLInfo, err := f.readIndexHTML()
 
 	if err != nil {
 		return err

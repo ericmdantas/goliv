@@ -83,7 +83,9 @@ func startServer(cfg *Config) error {
 
 func sendIndex(cfg *Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if err := cfg.readIndexHTML(); err != nil {
+		f := newIndexFile(cfg)
+
+		if err := cfg.readIndexHTML(f); err != nil {
 			panic(err)
 		}
 
