@@ -92,11 +92,7 @@ func (s *server) start(cbServerReady func() error) error {
 		}
 	}
 
-	if err := e.Run(standard.New(s.cfg.Port)); err != nil {
-		return err
-	}
-
-	return nil
+	return e.Run(standard.New(s.cfg.Port))
 }
 
 func (s *server) sendIndex() echo.HandlerFunc {
