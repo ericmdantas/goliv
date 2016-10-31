@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	cfgFileName         = ".golivrc"
+	cfgFileName         = ".alivrc"
 	defaultHost         = "127.0.0.1"
 	defaultPort         = ":1308"
 	inlinePathSeparator = ","

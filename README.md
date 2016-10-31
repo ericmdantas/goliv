@@ -57,7 +57,7 @@ $ go get -u github.com/ericmdantas/goliv
 
 ## How?
 
-You can choose the way to work with go: `CLI` (terminal), `.golivrc` (config file) or a `local golang package`.
+You can choose the way to work with go: `CLI` (terminal), `.alivrc` (config file) or a `local golang package`.
 
 Go to the folder that contains the `index.html` file and run:
 
@@ -93,9 +93,9 @@ Oh, do you want some specific stuff? Checkout the available <a href="#config">co
 ```
 
 
-#### .golivrc
+#### .alivrc
 
-All the <a href="#config">config</a> being used on the `CLI` can be added to the `.golivrc` file, like this:
+All the <a href="#config">config</a> being used on the `CLI` can be added to the `.alivrc` file, like this:
 
 ```json
 {
@@ -109,7 +109,7 @@ All the <a href="#config">config</a> being used on the `CLI` can be added to the
 }
 ```
 
-By doing that, when running `$ goliv`, it'll get all that's inside the config in `.golivrc` and use it.
+By doing that, when running `$ goliv`, it'll get all that's inside the config in `.alivrc` and use it.
 
 But keep in mind that if you have such file and still use something like `$ goliv -port 9999`, **the cli will have priority** over the file.
 

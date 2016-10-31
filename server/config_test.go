@@ -18,7 +18,7 @@ func (m myIndexFileMock) readIndexHTML() ([]byte, error) {
 }
 
 func TestCfgFileNameConstant(t *testing.T) {
-	assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
+	assert.Equal(t, ".alivrc", cfgFileName, "should have the right name for the file")
 }
 
 func TestDefaultPortConstant(t *testing.T) {
