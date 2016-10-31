@@ -133,7 +133,7 @@ var tableTestInjectScript = []struct {
 	{
 		inIndex:     []byte("<body>"),
 		outIndex:    "<body>",
-		description: "should not append anything, html doesn't have a closing",
+		description: "should not append anything, html doesn't have a closing body",
 	},
 	{
 		inIndex: []byte("</body>"),
@@ -152,6 +152,6 @@ var tableTestInjectScript = []struct {
 						}());
 					</script>
 				</div></body>`,
-		description: "should not append anything, html doesn't have a closing",
+		description: "should append the script, html has a closing body",
 	},
 }
