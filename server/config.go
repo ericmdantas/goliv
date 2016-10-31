@@ -98,8 +98,12 @@ func (cfg *Config) Parse() {
 		cfg.WSURL = "ws://" + cfg.Host
 	}
 
-	if len(cfg.Only) == 0 && cfg.OnlyCLI != "" {
-		cfg.Only = strings.Split(cfg.OnlyCLI, inlinePathSeparator)
+	if len(cfg.Only) == 0 {
+		if cfg.OnlyCLI == "" {
+			cfg.Only = []string{"."}
+		} else {
+			cfg.Only = strings.Split(cfg.OnlyCLI, inlinePathSeparator)
+		}
 	}
 
 	cfg.HTTPURL += cfg.Port

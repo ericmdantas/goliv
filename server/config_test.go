@@ -272,8 +272,8 @@ var tableTestParseOnlyPaths = []struct {
 		inOnly:    []string{},
 		inOnlyCLI: "",
 
-		outOnly:     []string{},
-		description: "only default value",
+		outOnly:     []string{"."},
+		description: "only default value - single dot",
 	},
 	{
 		inOnly:    []string{},
