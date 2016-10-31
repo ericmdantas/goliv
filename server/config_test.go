@@ -78,6 +78,7 @@ func TestConfigParseOnlyPaths(t *testing.T) {
 
 		cfg.Only = v.inOnly
 		cfg.OnlyCLI = v.inOnlyCLI
+		cfg.Root = v.inRoot
 
 		cfg.Parse()
 
@@ -263,6 +264,7 @@ var tableTestParseURL = []struct {
 var tableTestParseOnlyPaths = []struct {
 	inOnly    []string
 	inOnlyCLI string
+	inRoot    string
 
 	outOnly []string
 
@@ -271,6 +273,7 @@ var tableTestParseOnlyPaths = []struct {
 	{
 		inOnly:    []string{},
 		inOnlyCLI: "",
+		inRoot:    "",
 
 		outOnly:     []string{"."},
 		description: "only default value - single dot",
@@ -278,6 +281,7 @@ var tableTestParseOnlyPaths = []struct {
 	{
 		inOnly:    []string{},
 		inOnlyCLI: "a",
+		inRoot:    "",
 
 		outOnly:     []string{"a"},
 		description: "single onlyCLI value being parsed into Only",
@@ -285,6 +289,7 @@ var tableTestParseOnlyPaths = []struct {
 	{
 		inOnly:    []string{},
 		inOnlyCLI: "a,b,c",
+		inRoot:    "",
 
 		outOnly:     []string{"a", "b", "c"},
 		description: "multiple onlyCLI value being parsed into Only",
@@ -292,9 +297,42 @@ var tableTestParseOnlyPaths = []struct {
 	{
 		inOnly:    []string{"x", "y", "z"},
 		inOnlyCLI: "a,b,c",
+		inRoot:    "",
 
 		outOnly:     []string{"x", "y", "z"},
 		description: "Only value being left as it is",
+	},
+	{
+		inOnly:    []string{"x", "y", "z"},
+		inOnlyCLI: "",
+		inRoot:    "base_root",
+
+		outOnly:     []string{filepath.Join("base_root", "x"), filepath.Join("base_root", "y"), filepath.Join("base_root", "z")},
+		description: "Only value should have the root as base",
+	},
+	{
+		inOnly:    []string{"x", "y", "z"},
+		inOnlyCLI: "1,2,3",
+		inRoot:    "base_root2",
+
+		outOnly:     []string{filepath.Join("base_root2", "x"), filepath.Join("base_root2", "y"), filepath.Join("base_root2", "z")},
+		description: "Only value should have the root as base - it should ignore the values in onlyCLI",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "1,2,3",
+		inRoot:    "base_root3",
+
+		outOnly:     []string{filepath.Join("base_root3", "1"), filepath.Join("base_root3", "2"), filepath.Join("base_root3", "3")},
+		description: "Only value should have the root as base - since Only is empty, it should parse and use the values in onlyCLI",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "",
+		inRoot:    "base_root4",
+
+		outOnly:     []string{"base_root4"},
+		description: "Since both Only and OnlyCLI are empty, it should only use the root",
 	},
 }
 

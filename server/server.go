@@ -7,6 +7,7 @@ import (
 	"net/http"
 	_ "net/http/httputil"
 	"path/filepath"
+	"time"
 
 	"golang.org/x/net/websocket"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/labstack/echo/engine"
 	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/echo/middleware"
+	"github.com/radovskyb/watcher"
 )
 
 const (
@@ -40,12 +42,17 @@ func Start(cfg *Config) error {
 	}
 
 	return s.start(func() error {
+		if err := s.startWatcher(); err != nil {
+			return err
+		}
+
 		return openBrowser(s.cfg)
 	})
 }
 
 type server struct {
-	cfg *Config
+	cfg     *Config
+	watcher *watcher.Watcher
 }
 
 func (s *server) start(cbServerReady func() error) error {
@@ -115,14 +122,63 @@ func (s *server) sendIndex() echo.HandlerFunc {
 
 func (s *server) handleWSConnection() websocket.Handler {
 	return websocket.Handler(func(conn *websocket.Conn) {
-		if err := watchContent(s.cfg, s.notifyChange(conn)); err != nil {
-			panic(err)
-		}
+		s.onChange(conn)
 	})
 }
 
-func (s *server) notifyChange(conn *websocket.Conn) func() {
-	return func() {
-		conn.Write([]byte(reloadEvent))
+func (s *server) onChange(conn *websocket.Conn) {
+	select {
+	case event := <-s.watcher.Event:
+		switch event.Op {
+		case watcher.Create:
+			if !s.cfg.Quiet {
+				log.Println("Created file:", event.Name())
+			}
+
+			s.notifyChange(conn)
+		case watcher.Write:
+			if !s.cfg.Quiet {
+				log.Println("Changed file:", event.Name())
+			}
+
+			s.notifyChange(conn)
+		case watcher.Remove:
+			if !s.cfg.Quiet {
+				log.Println("Removed file:", event.Name())
+			}
+
+			s.notifyChange(conn)
+		case watcher.Rename:
+			if !s.cfg.Quiet {
+				log.Println("Renamed file:", event.Name())
+			}
+
+			s.notifyChange(conn)
+		}
+	case err := <-s.watcher.Error:
+		log.Fatalln(err)
 	}
+}
+
+func (s *server) notifyChange(conn *websocket.Conn) {
+	conn.Write([]byte(reloadEvent))
+}
+
+func (s *server) startWatcher() error {
+	s.watcher = watcher.New()
+	s.watcher.SetMaxEvents(1)
+
+	for _, path := range s.cfg.Only {
+		if err := s.watcher.Add(path); err != nil {
+			return err
+		}
+	}
+
+	go func() {
+		if err := s.watcher.Start(time.Millisecond * 100); err != nil {
+			panic(err)
+		}
+	}()
+
+	return nil
 }

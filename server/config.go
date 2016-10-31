@@ -100,9 +100,21 @@ func (cfg *Config) Parse() {
 
 	if len(cfg.Only) == 0 {
 		if cfg.OnlyCLI == "" {
-			cfg.Only = []string{"."}
+			if cfg.Root == "" {
+				cfg.Only = []string{"."}
+			} else {
+				cfg.Only = []string{cfg.Root}
+			}
 		} else {
-			cfg.Only = strings.Split(cfg.OnlyCLI, inlinePathSeparator)
+			pathsSplit := strings.Split(cfg.OnlyCLI, inlinePathSeparator)
+
+			for _, v := range pathsSplit {
+				cfg.Only = append(cfg.Only, filepath.Join(cfg.Root, v))
+			}
+		}
+	} else {
+		for i := range cfg.Only {
+			cfg.Only[i] = filepath.Join(cfg.Root, cfg.Only[i])
 		}
 	}
 
