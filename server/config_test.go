@@ -338,6 +338,54 @@ var tableTestParseOnlyPaths = []struct {
 		outOnly:     []string{"base_root4"},
 		description: "Since both Only and OnlyCLI are empty, it should only use the root",
 	},
+	{
+		inOnly:    []string{"a/b/**/*"},
+		inOnlyCLI: "",
+		inRoot:    "",
+
+		outOnly:     []string{filepath.Join("a/b")},
+		description: "single from the file - Removes * and removes duplication of * slashes",
+	},
+	{
+		inOnly:    []string{"a/b/**/*", "x/**"},
+		inOnlyCLI: "",
+		inRoot:    "",
+
+		outOnly:     []string{filepath.Join("a/b"), filepath.Join("x")},
+		description: "multiple from the file - Removes * and removes duplication of * slashes",
+	},
+	{
+		inOnly:    []string{"a/b/**/*", "x/**"},
+		inOnlyCLI: "",
+		inRoot:    "xabc",
+
+		outOnly:     []string{filepath.Join("xabc/a/b"), filepath.Join("xabc/x")},
+		description: "multiple from the file - with Root - Removes * and removes duplication of * slashes",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "a/b/**/*",
+		inRoot:    "",
+
+		outOnly:     []string{filepath.Join("a/b")},
+		description: "single from the CLI - Removes * and removes duplication of * slashes",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "a/b/**/*,x/**/*",
+		inRoot:    "",
+
+		outOnly:     []string{filepath.Join("a/b"), filepath.Join("x")},
+		description: "multiple from the CLI - Removes * and removes duplication of * slashes",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "a/b/**/*,x/**/*",
+		inRoot:    "x123",
+
+		outOnly:     []string{filepath.Join("x123/a/b"), filepath.Join("x123/x")},
+		description: "multiple from the CLI - with Root - Removes * and removes duplication of * slashes",
+	},
 }
 
 var tableTestParseIndexHTMLPathInfo = []struct {

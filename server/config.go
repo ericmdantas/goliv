@@ -119,6 +119,20 @@ func (cfg *Config) Parse() {
 		}
 	}
 
+	for i, v := range cfg.Only {
+		if str := strings.Replace(v, "*", "", -1); str != v {
+			if strings.HasSuffix(str, "\\\\") {
+				str = str[:len(str)-2]
+			} else {
+				if strings.HasSuffix(str, "\\") {
+					str = str[:len(str)-1]
+				}
+			}
+
+			cfg.Only[i] = str
+		}
+	}
+
 	cfg.HTTPURL += cfg.Port
 	cfg.WSURL += cfg.Port + "/ws"
 
