@@ -30,41 +30,128 @@ func TestGolivScript(t *testing.T) {
 }
 
 func TestInjectScript(t *testing.T) {
-	cfg := NewConfig()
+	for _, v := range tableTestInjectScript {
+		cfg := NewConfig()
 
-	cfg.Parse()
-	cfg.indexHTMLContent = []byte(`
-	!!!<body></body>???
-`)
+		cfg.Parse()
+		cfg.indexHTMLContent = v.inIndex
+		indexWithScriptInjected, err := injectScript(cfg)
 
-	indexWithScript := `
-	!!!<body><div id="goliv-container" style="display: none">
-			<script>	
-				;(function() {
-					"use strict";
-					
-					var ws = new WebSocket("ws://127.0.0.1:1308/ws");
-					
-					ws.onmessage = function(ev) {
-						if (ev.data === "reload") {
-							window.location.reload();
-						}
-					};
-				}());
-			</script>
-		</div></body>???
-`
+		if err != nil {
+			assert.Fail(t, "error injecting the script")
+		}
 
-	indexWithScriptInjected, err := injectScript(cfg)
+		r := strings.NewReplacer("\n", "", "\t", "")
 
-	if err != nil {
-		assert.Fail(t, "error injecting the script")
+		indexWithScript := r.Replace(v.outIndex)
+		indexWithScriptInjected = r.Replace(indexWithScriptInjected)
+
+		assert.Equal(t, indexWithScript, indexWithScriptInjected, v.description)
 	}
+}
 
-	r := strings.NewReplacer("\n", "", "\t", "")
+var tableTestInjectScript = []struct {
+	inIndex []byte
 
-	indexWithScript = r.Replace(indexWithScript)
-	indexWithScriptInjected = r.Replace(indexWithScriptInjected)
+	outIndex string
 
-	assert.Equal(t, indexWithScript, indexWithScriptInjected, "should have the right html injected")
+	description string
+}{
+	{
+		inIndex: []byte("!!!<body></body>???"),
+		outIndex: `
+			!!!<body><div id="goliv-container" style="display: none">
+					<script>	
+						;(function() {
+							"use strict";
+							
+							var ws = new WebSocket("ws://127.0.0.1:1308/ws");
+							
+							ws.onmessage = function(ev) {
+								if (ev.data === "reload") {
+									window.location.reload();
+								}
+							};
+						}());
+					</script>
+				</div></body>???
+		`,
+		description: "should have the right html injected - symbols",
+	},
+	{
+		inIndex: []byte("123<body></body>456"),
+		outIndex: `
+			123<body><div id="goliv-container" style="display: none">
+					<script>	
+						;(function() {
+							"use strict";
+							
+							var ws = new WebSocket("ws://127.0.0.1:1308/ws");
+							
+							ws.onmessage = function(ev) {
+								if (ev.data === "reload") {
+									window.location.reload();
+								}
+							};
+						}());
+					</script>
+				</div></body>456
+		`,
+		description: "should have the right html injected - numbers",
+	},
+	{
+		inIndex: []byte("<body></body>"),
+		outIndex: `
+			<body><div id="goliv-container" style="display: none">
+					<script>	
+						;(function() {
+							"use strict";
+							
+							var ws = new WebSocket("ws://127.0.0.1:1308/ws");
+							
+							ws.onmessage = function(ev) {
+								if (ev.data === "reload") {
+									window.location.reload();
+								}
+							};
+						}());
+					</script>
+				</div></body>
+		`,
+		description: "should have the right html injected - only body",
+	},
+	{
+		inIndex:     []byte(""),
+		outIndex:    "",
+		description: "should not append anything, html is empty",
+	},
+	{
+		inIndex:     []byte("<html></html>"),
+		outIndex:    "<html></html>",
+		description: "should not append anything, html has no body",
+	},
+	{
+		inIndex:     []byte("<body>"),
+		outIndex:    "<body>",
+		description: "should not append anything, html doesn't have a closing",
+	},
+	{
+		inIndex: []byte("</body>"),
+		outIndex: `<div id="goliv-container" style="display: none">
+					<script>	
+						;(function() {
+							"use strict";
+							
+							var ws = new WebSocket("ws://127.0.0.1:1308/ws");
+							
+							ws.onmessage = function(ev) {
+								if (ev.data === "reload") {
+									window.location.reload();
+								}
+							};
+						}());
+					</script>
+				</div></body>`,
+		description: "should not append anything, html doesn't have a closing",
+	},
 }
