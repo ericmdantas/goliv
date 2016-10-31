@@ -39,7 +39,7 @@ type Config struct {
 	indexHTMLFile    *os.File
 }
 
-func (cfg *Config) Assign(defaultOpt, fileOpt, cliOpt Config) error {
+func (cfg *Config) assign(defaultOpt, fileOpt, cliOpt Config) error {
 	bDefaultValuesOpt, err := json.Marshal(defaultOpt)
 
 	if err != nil {

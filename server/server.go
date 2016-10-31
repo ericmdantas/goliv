@@ -29,7 +29,7 @@ func Start(cfg *Config) error {
 		return err
 	}
 
-	if err := cfg.Assign(defaultOpt, fileOpt, cliOpt); err != nil {
+	if err := cfg.assign(defaultOpt, fileOpt, cliOpt); err != nil {
 		return fmt.Errorf("There was an error when assigning the properties. %v\n", err)
 	}
 

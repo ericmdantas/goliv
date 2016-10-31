@@ -98,13 +98,13 @@ func TestConfigParseIndexHTMLPathInfo(t *testing.T) {
 	}
 }
 
-func TestConfigAssignBeingTheDefaultValues(t *testing.T) {
+func TestConfigassignBeingTheDefaultValues(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
 	cli1 := Config{}
 
-	opt1.Assign(default1, file1, cli1)
+	opt1.assign(default1, file1, cli1)
 
 	assert.Equal(t, "127.0.0.1", default1.Host, "should have the default Host")
 	assert.Equal(t, ":1308", default1.Port, "should have the default Port")
@@ -112,7 +112,7 @@ func TestConfigAssignBeingTheDefaultValues(t *testing.T) {
 	assert.Equal(t, false, default1.Secure, "should have the default Secure")
 }
 
-func TestConfigAssignBeingOverriddenByCli(t *testing.T) {
+func TestConfigassignBeingOverriddenByCli(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
@@ -121,7 +121,7 @@ func TestConfigAssignBeingOverriddenByCli(t *testing.T) {
 	cli1.Port = "abc"
 	file1.Port = "123"
 
-	opt1.Assign(default1, file1, cli1)
+	opt1.assign(default1, file1, cli1)
 
 	assert.Equal(t, "abc", cli1.Port, "should override the port from the file")
 
@@ -133,12 +133,12 @@ func TestConfigAssignBeingOverriddenByCli(t *testing.T) {
 	cli2.Host = "https://abc.com"
 	file2.Host = "yoyo://abc.??"
 
-	opt2.Assign(default2, file2, cli2)
+	opt2.assign(default2, file2, cli2)
 
 	assert.Equal(t, "https://abc.com", cli2.Host, "should override the Host")
 }
 
-func TestConfigAssignBeingOverriddenByFile(t *testing.T) {
+func TestConfigassignBeingOverriddenByFile(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
@@ -146,7 +146,7 @@ func TestConfigAssignBeingOverriddenByFile(t *testing.T) {
 
 	file1.Port = "123"
 
-	opt1.Assign(default1, file1, cli1)
+	opt1.assign(default1, file1, cli1)
 
 	assert.Equal(t, "123", opt1.Port, "should override the port from the default values")
 
@@ -157,12 +157,12 @@ func TestConfigAssignBeingOverriddenByFile(t *testing.T) {
 
 	file2.Host = "yoyo://abc.??"
 
-	opt2.Assign(default2, file2, cli2)
+	opt2.assign(default2, file2, cli2)
 
 	assert.Equal(t, "yoyo://abc.??", opt2.Host, "should override the Host from the default values")
 }
 
-func TestConfigAssignBeingAdded(t *testing.T) {
+func TestConfigassignBeingAdded(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
@@ -171,7 +171,7 @@ func TestConfigAssignBeingAdded(t *testing.T) {
 	cli1.Port = "abc"
 	file1.Secure = true
 
-	opt1.Assign(default1, file1, cli1)
+	opt1.assign(default1, file1, cli1)
 
 	assert.Equal(t, "abc", opt1.Port, "should keep the port as it was")
 	assert.Equal(t, true, opt1.Secure, "should add the secure the the config")
@@ -184,7 +184,7 @@ func TestConfigAssignBeingAdded(t *testing.T) {
 	cli2.Host = "https://abc.com"
 	file2.Only = []string{"a", "b", "c"}
 
-	opt2.Assign(default2, file2, cli2)
+	opt2.assign(default2, file2, cli2)
 
 	assert.Equal(t, "https://abc.com", opt2.Host, "should keep the Host")
 	assert.Equal(t, []string{"a", "b", "c"}, opt2.Only, "should add Only to the option")
@@ -197,7 +197,7 @@ func TestConfigAssignBeingAdded(t *testing.T) {
 	cli3.Host = "https://abc123.com"
 	cli3.OnlyCLI = "x,y,z"
 
-	opt3.Assign(default3, file3, cli3)
+	opt3.assign(default3, file3, cli3)
 
 	assert.Equal(t, "https://abc123.com", opt3.Host, "should keep the Host")
 	assert.Equal(t, "x,y,z", opt3.OnlyCLI, "should add OnlyCLI to the option")
