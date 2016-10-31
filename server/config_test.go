@@ -17,20 +17,24 @@ func (m myIndexFileMock) readIndexHTML() ([]byte, error) {
 	return []byte(m.info), m.err
 }
 
-func TestCfgFileName(t *testing.T) {
+func TestCfgFileNameConstant(t *testing.T) {
 	assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
 }
 
-func TestDefaultPort(t *testing.T) {
+func TestDefaultPortConstant(t *testing.T) {
 	assert.Equal(t, ":1308", defaultPort, "should have the right port value")
 }
 
-func TestDefaultHost(t *testing.T) {
+func TestDefaultHostConstant(t *testing.T) {
 	assert.Equal(t, "127.0.0.1", defaultHost, "should have the right host value")
 }
 
-func TestInlinePathSeparator(t *testing.T) {
+func TestInlinePathSeparatorConstant(t *testing.T) {
 	assert.Equal(t, ",", inlinePathSeparator, "should have the right path separator value")
+}
+
+func TestNameIndexHTMLFileConstant(t *testing.T) {
+	assert.Equal(t, "index.html", nameIndexHTMLFile, "should have the right name for the index file")
 }
 
 func TestNewConfig(t *testing.T) {

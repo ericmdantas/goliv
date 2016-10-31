@@ -13,6 +13,7 @@ const (
 	defaultHost         = "127.0.0.1"
 	defaultPort         = ":1308"
 	inlinePathSeparator = ","
+	nameIndexHTMLFile   = "index.html"
 )
 
 type Config struct {
@@ -121,7 +122,7 @@ func (cfg *Config) Parse() {
 	cfg.HTTPURL += cfg.Port
 	cfg.WSURL += cfg.Port + "/ws"
 
-	cfg.indexHTMLPath = filepath.Join(cfg.Root, cfg.PathIndex, "index.html")
+	cfg.indexHTMLPath = filepath.Join(cfg.Root, cfg.PathIndex, nameIndexHTMLFile)
 }
 
 func (cfg *Config) readIndexHTML(f IndexFileReader) error {
