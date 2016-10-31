@@ -19,7 +19,8 @@ import (
 )
 
 const (
-	reloadEvent = "reload"
+	reloadEvent       = "reload"
+	intervalFileCheck = 1000
 )
 
 func Start(cfg *Config) error {
@@ -175,7 +176,7 @@ func (s *server) startWatcher() error {
 	}
 
 	go func() {
-		if err := s.watcher.Start(time.Millisecond * 100); err != nil {
+		if err := s.watcher.Start(time.Millisecond * intervalFileCheck); err != nil {
 			panic(err)
 		}
 	}()
