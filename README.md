@@ -28,7 +28,7 @@ Todo:
 
 Light, fast and powerful one liner live-reloading Golang server.
 
-From the simplest live-reloading server to complex apps that need compression, proxies and https - `goliv` got you covered.
+From the simplest live-reloading server to complex apps that need `compression`, `proxies` and `https`/`http2` - `goliv` got you covered.
 
 
 ## Install
@@ -44,14 +44,14 @@ $ go get -u github.com/ericmdantas/goliv
 
 - Refresh all your browsers with each file change;
 - Proxy request/responses;
-- Automagically gzip the response of your server;
+- Automagically gzip the response of your server so your page loads faster;
 - Use HTTP/2 by simply setting `secure` to `true`;
 - Use less memory/CPU possible.
 
 
 ## How?
 
-You can choose the way to work with go: `CLI` (terminal), `.golivrc` (config file) or a `local node module`.
+You can choose the way to work with go: `CLI` (terminal), `.golivrc` (config file) or a `local golang package`.
 
 Go to the folder that contains the `index.html` file and run:
 
@@ -103,12 +103,12 @@ All the <a href="#config">config</a> being used on the `CLI` can be added to the
 }
 ```
 
-By doing that, when running `$ goliv`, it'll get all the config in `.golivrc` and use it.
+By doing that, when running `$ goliv`, it'll get all that's inside the config in `.golivrc` and use it.
 
-But, if you have such file and still use something like `$ goliv -port 9999`, **the cli will have priority** over the file.
+But keep in mind that if you have such file and still use something like `$ goliv -port 9999`, **the cli will have priority** over the file.
 
 
-#### Go module
+#### Using in a Go package
 
 ```go
 import (
@@ -118,8 +118,11 @@ import (
 func main() {
      cfg := goliv.NewConfig()
 
+     cfg.Quiet = true
+     cfg.Root = "client/dev"
+
     // yes, that easy - now your browser will open 
-    // and it'll be refreshed every time a file change
+    // and it'll be refreshed every time a file changes
      if err := goliv.Start(cfg); err != nil {
          panic(err)
      }
