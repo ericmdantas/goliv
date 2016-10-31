@@ -6,22 +6,32 @@ Like [aliv](https://github.com/ericmdantas/aliv), but written in Go.
 
 ## Disclaimer
 
-This is a work in progress. Most of the features are still missing, so, this is still not complete port of [aliv](https://github.com/ericmdantas/aliv) yet.
+This is a work in progress.
 
-If you want to help the development, you can clone the repo and run:
+#### Todo:
+
+As of right now, there's no implementation of either `Reverse-Proxy` or `HTTP/2`.
+
+The first is all about either using the `httputil` from the `stdlib` or using a 3rd party lib. 
+The later, even though is easier to implement, I still have to find a way to use the certs in the user machine. 
+Right now, when Go installs `goliv` it won't bring the certs left and right, which makes the `-secure` option fail - 
+because it needs a physical path to those files, both the `server.crt` and the `server.key`.
+
+
+#### How to help
+
+If you want to help the development, you can either clone or fork the repo and run:
 
 ```shell
 $ go run main.go -root=_fixture
 ```
 
-Go to `http://127.0.0.1:1309` (you can open in more than one browser), it'll show a html, which is being served from the `_fixture` folder. Everytime you edit the `index.html`, `app.js` or `style.css`, the browsers will be refreshed - showing the new content.
+Navigate to `http://127.0.0.1:1309` (you can open in more than one browser), it'll show the html, 
+which is being served from the `_fixture` folder. Everytime you edit the `index.html`, `app.js` or `style.css`, 
+the browsers will be refreshed - showing the new content.
 
-Please, check if things are working correctly. Also, try the other params and report some bugs. Thanks!
+Please, check if things are working correctly and try the other params to see if they're working. Report any bugs you find.
 
-
-Todo:
-- Proxy;
-- HTTP/2.
 
 
 ## What?
