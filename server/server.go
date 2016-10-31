@@ -38,7 +38,7 @@ func Start(cfg *Config) error {
 
 	cfg.Parse()
 
-	s := server{
+	s := &server{
 		cfg: cfg,
 	}
 
