@@ -129,6 +129,10 @@ func (cfg *Config) Parse() {
 				}
 			}
 
+			if str == "" {
+				str = filepath.Join(cfg.Root, ".")
+			}
+
 			cfg.Only[i] = str
 		}
 	}

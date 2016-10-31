@@ -363,6 +363,22 @@ var tableTestParseOnlyPaths = []struct {
 		description: "multiple from the file - with Root - Removes * and removes duplication of * slashes",
 	},
 	{
+		inOnly:    []string{"/**/*"},
+		inOnlyCLI: "",
+		inRoot:    "",
+
+		outOnly:     []string{"."},
+		description: "multiple from the file - with Root - should leave the dot",
+	},
+	{
+		inOnly:    []string{"/**/*"},
+		inOnlyCLI: "",
+		inRoot:    "abc",
+
+		outOnly:     []string{"abc"},
+		description: "multiple from the file - with Root - should leave the root",
+	},
+	{
 		inOnly:    []string{},
 		inOnlyCLI: "a/b/**/*",
 		inRoot:    "",
@@ -385,6 +401,22 @@ var tableTestParseOnlyPaths = []struct {
 
 		outOnly:     []string{filepath.Join("x123/a/b"), filepath.Join("x123/x")},
 		description: "multiple from the CLI - with Root - Removes * and removes duplication of * slashes",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "**/*",
+		inRoot:    "",
+
+		outOnly:     []string{"."},
+		description: "multiple from the CLI - should leave the dot only",
+	},
+	{
+		inOnly:    []string{},
+		inOnlyCLI: "**/*",
+		inRoot:    "abc",
+
+		outOnly:     []string{"abc"},
+		description: "multiple from the CLI - should leave the root",
 	},
 }
 
