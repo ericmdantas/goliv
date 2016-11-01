@@ -57,7 +57,7 @@ $ go get -u github.com/ericmdantas/goliv
 
 ## How?
 
-You can choose the way to work with go: `CLI` (terminal), `.alivrc` (config file) or a `local golang package`.
+You can choose the way to work with go: `CLI` (terminal), `.golivrc` (config file) or a `local golang package`.
 
 Go to the folder that contains the `index.html` file and run:
 
@@ -81,8 +81,8 @@ Oh, do you want some specific stuff? Checkout the available <a href="#config">co
 -secure                    use https/wss
 -quiet                     no logging whatsoever
 -noBrowser                 won't open the browser automagically
--only                      will only watch for changes in the given path/glob/regex/array
--ignore                    won't watch for changes in the given path (regex)
+-only                      will only watch for changes in the given - slice
+-ignore                    won't watch for changes in the given paths - slice
 -pathIndex                 change the path to your index.html
 -proxy                     uses proxy
 -proxyTarget               the http/https server where the proxy will "redirect"
@@ -93,23 +93,25 @@ Oh, do you want some specific stuff? Checkout the available <a href="#config">co
 ```
 
 
-#### .alivrc
+#### .golivrc
 
-All the <a href="#config">config</a> being used on the `CLI` can be added to the `.alivrc` file, like this:
+All the <a href="#config">config</a> being used on the `CLI` can be added to the `.golivrc` file, like this:
 
 ```json
 {
   "port": 9999,
   "quiet": true,
   "pathIndex": "src/",
-  "only": ["src/**/*"],
+  "only": [
+      "src"
+  ],
   "proxy": true,
   "proxyTarget": "http://my-other-server.com:1234",
   "proxyWhen": "/api/*"
 }
 ```
 
-By doing that, when running `$ goliv`, it'll get all that's inside the config in `.alivrc` and use it.
+By doing that, when running `$ goliv`, it'll get all that's inside the config in `.golivrc` and use it.
 
 But keep in mind that if you have such file and still use something like `$ goliv -port 9999`, **the cli will have priority** over the file.
 
@@ -142,8 +144,8 @@ func main() {
 -host          is 127.0.0.1
 -secure        is false
 -quiet         is false
--only          is ".", which means it'll watch everything
--ignore        is ^(node_modules|bower_components|jspm_packages|test|typings|coverage|unit_coverage)
+-only          is []string{"."}, which means it'll watch everything
+-ignore        is []string{}, which means it won't ignore anything
 -noBrowser     is false, which means it'll always open the browser on start
 -pathIndex     is "", which means it'll look for the index.html in the root
 -proxy         is false, which means it'll not look for another server to answer for the /api/, for example

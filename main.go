@@ -17,7 +17,7 @@ func main() {
 	flag.BoolVar(&cfg.Quiet, "quiet", false, "no log")
 	flag.BoolVar(&cfg.NoBrowser, "noBrowser", false, "doesn't open the browser")
 	flag.StringVar(&cfg.OnlyCLI, "only", "", "watchable paths - separated by comma")
-	flag.StringVar(&cfg.Ignore, "ignore", "", "paths ignored")
+	flag.StringVar(&cfg.IgnoreCLI, "ignore", "", "paths ignored - separated by comma")
 	flag.StringVar(&cfg.PathIndex, "pathIndex", "", "path to the index.html")
 	flag.BoolVar(&cfg.Proxy, "proxy", false, "if it's working as a reverse proxy or not")
 	flag.StringVar(&cfg.ProxyWhen, "proxyWhen", "", "when to activate the proxy")

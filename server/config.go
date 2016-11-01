@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	cfgFileName         = ".alivrc"
+	cfgFileName         = ".golivrc"
 	defaultHost         = "127.0.0.1"
 	defaultPort         = ":1308"
 	inlinePathSeparator = ","
@@ -23,7 +23,7 @@ type Config struct {
 	Quiet       bool     `json:"quiet,omitempty"`
 	NoBrowser   bool     `json:"noBrowser,omitempty"`
 	Only        []string `json:"only,omitempty"`
-	Ignore      string   `json:"ignore,omitempty"`
+	Ignore      []string `json:"ignore,omitempty"`
 	PathIndex   string   `json:"pathIndex,omitempty"`
 	Proxy       bool     `json:"proxy,omitempty"`
 	ProxyWhen   string   `json:"proxyWhen,omitempty"`
@@ -31,9 +31,10 @@ type Config struct {
 	Root        string   `json:"root,omitempty"`
 	Static      string   `json:"static,omitempty"`
 
-	OnlyCLI string
-	HTTPURL string
-	WSURL   string
+	IgnoreCLI string
+	OnlyCLI   string
+	HTTPURL   string
+	WSURL     string
 
 	indexHTMLPath    string
 	indexHTMLContent []byte
@@ -77,6 +78,14 @@ func (cfg *Config) assign(defaultOpt, fileOpt, cliOpt Config) error {
 
 	if cliOpt.OnlyCLI != "" {
 		cfg.Only = strings.Split(cfg.OnlyCLI, inlinePathSeparator)
+	}
+
+	if len(fileOpt.Ignore) != 0 {
+		cfg.Ignore = fileOpt.Ignore
+	}
+
+	if cliOpt.IgnoreCLI != "" {
+		cfg.Ignore = strings.Split(cfg.IgnoreCLI, inlinePathSeparator)
 	}
 
 	return nil
@@ -137,6 +146,14 @@ func (cfg *Config) Parse() {
 		}
 	}
 
+	if cfg.IgnoreCLI != "" {
+		cfg.Ignore = strings.Split(cfg.IgnoreCLI, inlinePathSeparator)
+	}
+
+	for i := range cfg.Ignore {
+		cfg.Ignore[i] = filepath.Join(cfg.Root, cfg.Ignore[i])
+	}
+
 	cfg.HTTPURL += cfg.Port
 	cfg.WSURL += cfg.Port + "/ws"
 
@@ -164,7 +181,7 @@ func NewConfig() *Config {
 		NoBrowser:   false,
 		OnlyCLI:     "",
 		Only:        []string{},
-		Ignore:      "",
+		Ignore:      []string{},
 		PathIndex:   "",
 		Proxy:       false,
 		ProxyTarget: "",

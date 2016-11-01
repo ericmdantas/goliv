@@ -175,6 +175,12 @@ func (s *server) startWatcher() error {
 		}
 	}
 
+	for _, path := range s.cfg.Ignore {
+		if err := s.watcher.Ignore(path); err != nil {
+			return err
+		}
+	}
+
 	go func() {
 		if err := s.watcher.Start(time.Millisecond * intervalFileCheck); err != nil {
 			panic(err)

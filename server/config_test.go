@@ -18,7 +18,7 @@ func (m myIndexFileMock) readIndexHTML() ([]byte, error) {
 }
 
 func TestCfgFileNameConstant(t *testing.T) {
-	assert.Equal(t, ".alivrc", cfgFileName, "should have the right name for the file")
+	assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
 }
 
 func TestDefaultPortConstant(t *testing.T) {
@@ -47,7 +47,7 @@ func TestNewConfig(t *testing.T) {
 	assert.Equal(t, false, cfg.NoBrowser, "default noBrowser value")
 	assert.Equal(t, "", cfg.OnlyCLI, "default OnlyCLI value")
 	assert.Equal(t, []string{}, cfg.Only, "default OnlyCLI value")
-	assert.Equal(t, "", cfg.Ignore, "default ignore value")
+	assert.Equal(t, []string{}, cfg.Ignore, "default ignore value")
 	assert.Equal(t, "", cfg.PathIndex, "default pathIndex value")
 	assert.Equal(t, false, cfg.Proxy, "default proxy value")
 	assert.Equal(t, "", cfg.ProxyTarget, "default proxyTarget value")
@@ -90,6 +90,20 @@ func TestConfigParseOnlyPaths(t *testing.T) {
 	}
 }
 
+func TestConfigParseIgnorePaths(t *testing.T) {
+	for _, v := range tableTestParseIgnorePaths {
+		cfg := NewConfig()
+
+		cfg.Ignore = v.inIgnoreFile
+		cfg.IgnoreCLI = v.inIgnoreCLI
+		cfg.Root = v.inRoot
+
+		cfg.Parse()
+
+		assert.Equal(t, v.outIgnore, cfg.Ignore, v.description)
+	}
+}
+
 func TestConfigParseIndexHTMLPathInfo(t *testing.T) {
 	for _, v := range tableTestParseIndexHTMLPathInfo {
 		cfg := NewConfig()
@@ -103,7 +117,7 @@ func TestConfigParseIndexHTMLPathInfo(t *testing.T) {
 	}
 }
 
-func TestConfigassignBeingTheDefaultValues(t *testing.T) {
+func TestConfigAssignBeingTheDefaultValues(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
@@ -117,7 +131,7 @@ func TestConfigassignBeingTheDefaultValues(t *testing.T) {
 	assert.Equal(t, false, default1.Secure, "should have the default Secure")
 }
 
-func TestConfigassignBeingOverriddenByCli(t *testing.T) {
+func TestConfigAssignBeingOverriddenByCli(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
@@ -143,7 +157,7 @@ func TestConfigassignBeingOverriddenByCli(t *testing.T) {
 	assert.Equal(t, "https://abc.com", cli2.Host, "should override the Host")
 }
 
-func TestConfigassignBeingOverriddenByFile(t *testing.T) {
+func TestConfigAssignBeingOverriddenByFile(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
@@ -167,7 +181,7 @@ func TestConfigassignBeingOverriddenByFile(t *testing.T) {
 	assert.Equal(t, "yoyo://abc.??", opt2.Host, "should override the Host from the default values")
 }
 
-func TestConfigassignBeingAdded(t *testing.T) {
+func TestConfigAssignBeingAdded(t *testing.T) {
 	opt1 := NewConfig()
 	default1 := *NewConfig()
 	file1 := Config{}
@@ -207,6 +221,19 @@ func TestConfigassignBeingAdded(t *testing.T) {
 	assert.Equal(t, "https://abc123.com", opt3.Host, "should keep the Host")
 	assert.Equal(t, "x,y,z", opt3.OnlyCLI, "should add OnlyCLI to the option")
 	assert.Equal(t, []string{"x", "y", "z"}, opt3.Only, "should add Only to the option - already parsed")
+}
+
+func TestConfigAssignOnlyIgnores(t *testing.T) {
+	for _, v := range tableTestAssignIgnorePaths {
+		opt := NewConfig()
+		default1 := *NewConfig()
+		file1 := Config{Ignore: v.inIgnoreFile}
+		cli1 := Config{IgnoreCLI: v.inIgnoreCLI}
+
+		opt.assign(default1, file1, cli1)
+
+		assert.Equal(t, v.outIgnore, opt.Ignore, v.description)
+	}
 }
 
 func TestReadIndexHTML(t *testing.T) {
@@ -417,6 +444,138 @@ var tableTestParseOnlyPaths = []struct {
 
 		outOnly:     []string{"abc"},
 		description: "multiple from the CLI - should leave the root",
+	},
+}
+
+var tableTestAssignIgnorePaths = []struct {
+	inIgnoreCLI  string
+	inIgnoreFile []string
+
+	outIgnore []string
+
+	description string
+}{
+	{
+		inIgnoreCLI:  "",
+		inIgnoreFile: []string{},
+		outIgnore:    []string{},
+		description:  "Both Ignore and IgnoreCLI are empty, so it should stay that way",
+	},
+	{
+		inIgnoreCLI:  "a",
+		inIgnoreFile: []string{},
+		outIgnore:    []string{"a"},
+		description:  "single - IgnoreFile is empty, so the cli should be the only path ignored",
+	},
+	{
+		inIgnoreCLI:  "a,b,c",
+		inIgnoreFile: []string{},
+		outIgnore:    []string{"a", "b", "c"},
+		description:  "multiple - IgnoreFile is empty, so the cli should be the only path ignored",
+	},
+	{
+		inIgnoreCLI:  "",
+		inIgnoreFile: []string{"a"},
+		outIgnore:    []string{"a"},
+		description:  "single - IgnoreCLI is empty, should use IgnoreFile instead",
+	},
+	{
+		inIgnoreCLI:  "",
+		inIgnoreFile: []string{"a", "b", "c"},
+		outIgnore:    []string{"a", "b", "c"},
+		description:  "multiple - IgnoreCLI is empty, should use IgnoreFile instead",
+	},
+	{
+		inIgnoreCLI:  "x,y,z",
+		inIgnoreFile: []string{"a", "b", "c"},
+		outIgnore:    []string{"x", "y", "z"},
+		description:  "multiple - IgnoreCLI should override the info in IgnoreFile",
+	},
+	{
+		inIgnoreCLI:  "x,y,z",
+		inIgnoreFile: []string{"a", "b", "c"},
+		outIgnore:    []string{"x", "y", "z"},
+		description:  "multiple - IgnoreCLI should override the info in IgnoreFile",
+	},
+	{
+		inIgnoreCLI:  "x,y,z",
+		inIgnoreFile: []string{"a", "b", "c"},
+		outIgnore:    []string{"x", "y", "z"},
+		description:  "multiple - IgnoreCLI should override the info in IgnoreFile",
+	},
+}
+
+var tableTestParseIgnorePaths = []struct {
+	inIgnoreCLI  string
+	inIgnoreFile []string
+	inRoot       string
+
+	outIgnore []string
+
+	description string
+}{
+	{
+		inIgnoreCLI:  "",
+		inIgnoreFile: []string{},
+		inRoot:       "",
+		outIgnore:    []string{},
+		description:  "Both Ignore and IgnoreCLI are empty, so it should stay that way",
+	},
+	{
+		inIgnoreCLI:  "a",
+		inIgnoreFile: []string{},
+		inRoot:       "",
+		outIgnore:    []string{"a"},
+		description:  "single - IgnoreFile is empty, so the cli should be the only path ignored",
+	},
+	{
+		inIgnoreCLI:  "a,b,c",
+		inIgnoreFile: []string{},
+		inRoot:       "",
+		outIgnore:    []string{"a", "b", "c"},
+		description:  "multiple - IgnoreFile is empty, so the cli should be the only path ignored",
+	},
+	{
+		inIgnoreCLI:  "",
+		inIgnoreFile: []string{"a"},
+		inRoot:       "",
+		outIgnore:    []string{"a"},
+		description:  "single - IgnoreCLI is empty, should use IgnoreFile instead",
+	},
+	{
+		inIgnoreCLI:  "",
+		inIgnoreFile: []string{"a", "b", "c"},
+		inRoot:       "",
+		outIgnore:    []string{"a", "b", "c"},
+		description:  "multiple - IgnoreCLI is empty, should use IgnoreFile instead",
+	},
+	{
+		inIgnoreCLI:  "x,y,z",
+		inIgnoreFile: []string{"a", "b", "c"},
+		inRoot:       "",
+		outIgnore:    []string{"x", "y", "z"},
+		description:  "multiple - IgnoreCLI should override the info in IgnoreFile",
+	},
+	{
+		inIgnoreCLI:  "x,y,z",
+		inIgnoreFile: []string{"a", "b", "c"},
+		inRoot:       "",
+		outIgnore:    []string{"x", "y", "z"},
+		description:  "multiple - IgnoreCLI should override the info in IgnoreFile",
+	},
+	{
+		inIgnoreCLI:  "x,y,z",
+		inIgnoreFile: []string{"a", "b", "c"},
+		inRoot:       "",
+		outIgnore:    []string{"x", "y", "z"},
+		description:  "multiple - IgnoreCLI should override the info in IgnoreFile",
+	},
+	{
+		inIgnoreCLI:  "x,y,z",
+		inIgnoreFile: []string{"a", "b", "c"},
+		inRoot:       "zzz",
+		outIgnore:    []string{filepath.Join("zzz", "x"), filepath.Join("zzz", "y"), filepath.Join("zzz", "z")},
+		description:  "multiple - with root- IgnoreCLI should override the info in IgnoreFile",
 	},
 }
 
