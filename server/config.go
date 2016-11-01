@@ -141,7 +141,7 @@ func (cfg *Config) Parse() {
 			if strings.HasSuffix(str, "//") {
 				str = str[:len(str)-2]
 			} else {
-				if strings.HasSuffix(str, "\\") {
+				if strings.HasSuffix(str, "/") {
 					str = str[:len(str)-1]
 				}
 			}
