@@ -130,11 +130,7 @@ func (cfg *Config) Parse() {
 
 	for i, v := range cfg.Only {
 		if str := strings.Replace(v, "*", "", -1); str != v {
-			for strings.HasSuffix(str, "\\") {
-				str = str[:len(str)-1]
-			}
-
-			for strings.HasSuffix(str, "/") {
+			for strings.HasSuffix(str, "\\") || strings.HasSuffix(str, "/") {
 				str = str[:len(str)-1]
 			}
 
