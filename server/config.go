@@ -138,6 +138,14 @@ func (cfg *Config) Parse() {
 				}
 			}
 
+			if strings.HasSuffix(str, "//") {
+				str = str[:len(str)-2]
+			} else {
+				if strings.HasSuffix(str, "\\") {
+					str = str[:len(str)-1]
+				}
+			}
+
 			if str == "" {
 				str = filepath.Join(cfg.Root, ".")
 			}
