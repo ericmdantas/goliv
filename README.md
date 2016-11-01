@@ -77,7 +77,7 @@ Oh, do you want some specific stuff? Checkout the available <a href="#config">co
 
 ```
 -port                      change port
--host
+-host                      the host name, instead of showing localhost/127.0.0.1
 -secure                    use https/wss
 -quiet                     no logging whatsoever
 -noBrowser                 won't open the browser automagically
@@ -99,7 +99,7 @@ All the <a href="#config">config</a> being used on the `CLI` can be added to the
 
 ```json
 {
-  "port": 9999,
+  "port": ":9999",
   "quiet": true,
   "pathIndex": "src/",
   "only": [
@@ -113,7 +113,7 @@ All the <a href="#config">config</a> being used on the `CLI` can be added to the
 
 By doing that, when running `$ goliv`, it'll get all that's inside the config in `.golivrc` and use it.
 
-But keep in mind that if you have such file and still use something like `$ goliv -port 9999`, **the cli will have priority** over the file.
+But keep in mind that if you have such file and still use something like `$ goliv -port :1234`, **the cli will have priority** over the file.
 
 
 #### Using in a Go package
@@ -140,7 +140,7 @@ func main() {
 #### Default values
 
 ```
--port          is 1307
+-port          is :1308
 -host          is 127.0.0.1
 -secure        is false
 -quiet         is false
