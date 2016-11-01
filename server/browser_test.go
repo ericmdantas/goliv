@@ -33,7 +33,7 @@ func TestInjectScript(t *testing.T) {
 	for _, v := range tableTestInjectScript {
 		cfg := NewConfig()
 
-		cfg.Parse()
+		cfg.parse()
 		cfg.indexHTMLContent = v.inIndex
 		indexWithScriptInjected, err := injectScript(cfg)
 

@@ -36,7 +36,7 @@ func Start(cfg *Config) error {
 		return fmt.Errorf("There was an error when assigning the properties. %v\n", err)
 	}
 
-	cfg.Parse()
+	cfg.parse()
 
 	s := &server{
 		cfg: cfg,

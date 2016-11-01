@@ -91,7 +91,7 @@ func (cfg *Config) assign(defaultOpt, fileOpt, cliOpt Config) error {
 	return nil
 }
 
-func (cfg *Config) Parse() {
+func (cfg *Config) parse() {
 	if cfg.Host == "" {
 		cfg.Host = defaultHost
 	}

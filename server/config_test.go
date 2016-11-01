@@ -69,7 +69,7 @@ func TestConfigParseURL(t *testing.T) {
 		cfg.Port = v.inPort
 		cfg.Secure = v.inSecure
 
-		cfg.Parse()
+		cfg.parse()
 
 		assert.Equal(t, v.outHTTPURL, cfg.HTTPURL, v.descriptionHTTP)
 		assert.Equal(t, v.outWSURL, cfg.WSURL, v.descriptionWS)
@@ -84,7 +84,7 @@ func TestConfigParseOnlyPaths(t *testing.T) {
 		cfg.OnlyCLI = v.inOnlyCLI
 		cfg.Root = v.inRoot
 
-		cfg.Parse()
+		cfg.parse()
 
 		assert.Equal(t, v.outOnly, cfg.Only, v.description)
 	}
@@ -98,7 +98,7 @@ func TestConfigParseIgnorePaths(t *testing.T) {
 		cfg.IgnoreCLI = v.inIgnoreCLI
 		cfg.Root = v.inRoot
 
-		cfg.Parse()
+		cfg.parse()
 
 		assert.Equal(t, v.outIgnore, cfg.Ignore, v.description)
 	}
@@ -111,7 +111,7 @@ func TestConfigParseIndexHTMLPathInfo(t *testing.T) {
 		cfg.Root = v.inRoot
 		cfg.PathIndex = v.inPathIndex
 
-		cfg.Parse()
+		cfg.parse()
 
 		assert.Equal(t, v.outIndexHTMLPath, cfg.indexHTMLPath, v.description)
 	}
