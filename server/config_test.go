@@ -58,7 +58,6 @@ func TestNewConfig(t *testing.T) {
 	assert.Equal(t, "", cfg.WSURL, "default WSURL value")
 	assert.Equal(t, "", cfg.indexHTMLPath, "default index.html path")
 	assert.Equal(t, []byte{}, cfg.indexHTMLContent, "default index.html content value")
-	assert.Nil(t, cfg.indexHTMLFile)
 }
 
 func TestConfigParseURL(t *testing.T) {

@@ -38,7 +38,6 @@ type Config struct {
 
 	indexHTMLPath    string
 	indexHTMLContent []byte
-	indexHTMLFile    *os.File
 }
 
 func (cfg *Config) assign(defaultOpt, fileOpt, cliOpt Config) error {
@@ -190,7 +189,6 @@ func NewConfig() *Config {
 
 		indexHTMLPath:    "",
 		indexHTMLContent: []byte{},
-		indexHTMLFile:    nil,
 	}
 }
 
