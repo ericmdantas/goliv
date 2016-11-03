@@ -88,8 +88,6 @@ Oh, do you want some specific stuff? Checkout the available <a href="#config">co
 -proxyTarget               the http/https server where the proxy will "redirect"
 -proxyWhen                 when the proxy should be activated; like --pxw /api/*
 -root                      set the root to a different folder, like "./src/my/deep/folder/"
--watch                     choose to watch for files change or not
--static                    choose what paths are going to be served
 ```
 
 
@@ -152,8 +150,6 @@ func main() {
 -proxyTarget   is "", no server to be target
 -proxyWhen     is "", and it's supposed to be set with something like /api/*
 -root          is ""
--watch         is true
--static        is [root, root + "/path/to/your/index"]
 ```
 
 

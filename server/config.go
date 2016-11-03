@@ -19,7 +19,7 @@ const (
 type Config struct {
 	Port        string   `json:"port,omitempty"`
 	Host        string   `json:"host,omitempty"`
-	HTTP2      bool     `json:"http2,omitempty"`
+	HTTP2       bool     `json:"http2,omitempty"`
 	Quiet       bool     `json:"quiet,omitempty"`
 	NoBrowser   bool     `json:"noBrowser,omitempty"`
 	Only        []string `json:"only,omitempty"`
@@ -171,7 +171,7 @@ func NewConfig() *Config {
 	return &Config{
 		Port:        defaultPort,
 		Host:        defaultHost,
-		HTTP2:      false,
+		HTTP2:       false,
 		Quiet:       false,
 		NoBrowser:   false,
 		OnlyCLI:     "",
@@ -182,7 +182,6 @@ func NewConfig() *Config {
 		ProxyTarget: "",
 		ProxyWhen:   "",
 		Root:        "",
-		Static:      "",
 
 		HTTPURL: "",
 		WSURL:   "",

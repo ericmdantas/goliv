@@ -53,7 +53,6 @@ func TestNewConfig(t *testing.T) {
 	assert.Equal(t, "", cfg.ProxyTarget, "default proxyTarget value")
 	assert.Equal(t, "", cfg.ProxyWhen, "default proxyWhen value")
 	assert.Equal(t, "", cfg.Root, "default root value")
-	assert.Equal(t, "", cfg.Static, "default static value")
 	assert.Equal(t, "", cfg.HTTPURL, "default HTTPURL value")
 	assert.Equal(t, "", cfg.WSURL, "default WSURL value")
 	assert.Equal(t, "", cfg.indexHTMLPath, "default index.html path")
