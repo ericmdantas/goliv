@@ -7,13 +7,15 @@ import (
 )
 
 func TestNewIndexFile(t *testing.T) {
-	cfg := NewConfig()
+	t.Run("default", func(t *testing.T) {
+		cfg := NewConfig()
 
-	cfg.Root = "abc"
-	cfg.HTTP2 = true
-	cfg.Only = []string{"x", "y", "z"}
+		cfg.Root = "abc"
+		cfg.HTTP2 = true
+		cfg.Only = []string{"x", "y", "z"}
 
-	f := newIndexFile(cfg)
+		f := newIndexFile(cfg)
 
-	assert.Equal(t, cfg, f.cfg, "should have the same cfg in indexFile.cfg")
+		assert.Equal(t, cfg, f.cfg, "should have the same cfg in indexFile.cfg")
+	})
 }

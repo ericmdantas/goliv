@@ -243,19 +243,21 @@ func TestConfigAssign(t *testing.T) {
 }
 
 func TestReadIndexHTML(t *testing.T) {
-	for _, v := range tableTestReadIndexHTML {
-		m := myIndexFileMock{v.inInfo, v.inError}
+	t.Run("read", func(t *testing.T) {
+		for _, v := range tableTestReadIndexHTML {
+			m := myIndexFileMock{v.inInfo, v.inError}
 
-		cfg := NewConfig()
-		err := cfg.readIndexHTML(m)
+			cfg := NewConfig()
+			err := cfg.readIndexHTML(m)
 
-		if (err != nil && v.outError != nil) && (err.Error() != v.outError.Error()) {
-			assert.Fail(t, "should not fail now")
+			if (err != nil && v.outError != nil) && (err.Error() != v.outError.Error()) {
+				assert.Fail(t, "should not fail now")
+			}
+
+			assert.Equal(t, v.outInfo, cfg.indexHTMLContent, v.description)
+			assert.Equal(t, v.outError, err, v.description)
 		}
-
-		assert.Equal(t, v.outInfo, cfg.indexHTMLContent, v.description)
-		assert.Equal(t, v.outError, err, v.description)
-	}
+	})
 }
 
 var tableTestParseURL = []struct {

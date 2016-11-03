@@ -6,7 +6,8 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
-const golivScript = `
+const (
+	golivScript = `
 	<div id="goliv-container" style="display: none">
 		<script>	
 			;(function() {
@@ -23,6 +24,7 @@ const golivScript = `
 		</script>
 	</div>
 `
+)
 
 func injectScript(cfg *Config) (string, error) {
 	fileWithScript := strings.Replace(string(cfg.indexHTMLContent), "</body>", golivScript+"</body>", -1)

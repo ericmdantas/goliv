@@ -7,8 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGolivScript(t *testing.T) {
-	script := `
+func TestBrowserConstant(t *testing.T) {
+	t.Run("golivscript", func(t *testing.T) {
+		script := `
 	<div id="goliv-container" style="display: none">
 		<script>	
 			;(function() {
@@ -26,28 +27,31 @@ func TestGolivScript(t *testing.T) {
 	</div>
 `
 
-	assert.Equal(t, script, golivScript, "should have the right info for the script")
+		assert.Equal(t, script, golivScript, "should have the right info for the script")
+	})
 }
 
 func TestInjectScript(t *testing.T) {
-	for _, v := range tableTestInjectScript {
-		cfg := NewConfig()
+	t.Run("inject", func(t *testing.T) {
+		for _, v := range tableTestInjectScript {
+			cfg := NewConfig()
 
-		cfg.parse()
-		cfg.indexHTMLContent = v.inIndex
-		indexWithScriptInjected, err := injectScript(cfg)
+			cfg.parse()
+			cfg.indexHTMLContent = v.inIndex
+			indexWithScriptInjected, err := injectScript(cfg)
 
-		if err != nil {
-			assert.Fail(t, "error injecting the script")
+			if err != nil {
+				assert.Fail(t, "error injecting the script")
+			}
+
+			r := strings.NewReplacer("\n", "", "\t", "")
+
+			indexWithScript := r.Replace(v.outIndex)
+			indexWithScriptInjected = r.Replace(indexWithScriptInjected)
+
+			assert.Equal(t, indexWithScript, indexWithScriptInjected, v.description)
 		}
-
-		r := strings.NewReplacer("\n", "", "\t", "")
-
-		indexWithScript := r.Replace(v.outIndex)
-		indexWithScriptInjected = r.Replace(indexWithScriptInjected)
-
-		assert.Equal(t, indexWithScript, indexWithScriptInjected, v.description)
-	}
+	})
 }
 
 var tableTestInjectScript = []struct {
