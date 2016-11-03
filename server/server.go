@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	_ "net/http/httputil"
+	"net/url"
 	"path/filepath"
 	"time"
 
@@ -72,15 +72,25 @@ func (s *server) start(cbServerReady func() error) error {
 	e.GET("/", s.sendIndex())
 	e.GET("/ws", standard.WrapHandler(s.handleWSConnection()))
 
-	/*if cfg.Proxy {
-		e.Get(cfg.ProxyWhen, func(c echo.Context) error {
+	if s.cfg.Proxy {
+		e.Get(s.cfg.ProxyWhen, func(c echo.Context) error {
 			res := c.Response()
 			req := c.Request()
-			url := URL.Parse(cfg.ProxyTarget)
+			url, err := url.Parse(s.cfg.ProxyTarget)
 
-			return httputil.NewSingleHostReverseProxy(url).ServeHTTP(res, req)
+			if err != nil {
+				return err
+			}
+
+			//return httputil.NewSingleHostReverseProxy(url).ServeHTTP(res, req)
+
+			fmt.Println(res)
+			fmt.Println(req)
+			fmt.Println(url)
+
+			return nil
 		})
-	}*/
+	}
 
 	log.Printf("Goliv running on %s\n", s.cfg.HTTPURL)
 
