@@ -88,7 +88,7 @@ func (s *server) start(cbServerReady func() error) error {
 		return err
 	}
 
-	if s.cfg.Secure {
+	if s.cfg.HTTP2 {
 		err := e.Run(standard.WithConfig(engine.Config{
 			Address:     s.cfg.Port,
 			TLSCertFile: "server/crt/server.crt",

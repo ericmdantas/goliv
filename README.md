@@ -10,7 +10,7 @@ As of right now, there's no implementation of either `Reverse-Proxy` or `HTTP/2`
 
 The first is all about either using the `httputil` from the `stdlib` or using a 3rd party lib. 
 The later, even though is easier to implement, I still have to find a way to use the certs in the user machine. 
-Right now, when Go installs `goliv` it won't bring the certs left and right, which makes the `-secure` option fail - 
+Right now, when Go installs `goliv` it won't bring the certs left and right, which makes the `-http2` option fail - 
 because it needs a physical path to those files, both the `server.crt` and the `server.key`.
 
 
@@ -51,7 +51,7 @@ $ go get -u github.com/ericmdantas/goliv
 - Refresh all your browsers with each file change;
 - Proxy request/responses;
 - Automagically gzip the response of your server so your page loads faster;
-- Use HTTP/2 by simply setting `secure` to `true`;
+- Use HTTP/2 by simply setting `http2` to `true`;
 - Use less memory/CPU possible.
 
 
@@ -78,7 +78,7 @@ Oh, do you want some specific stuff? Checkout the available <a href="#config">co
 ```
 -port                      change port
 -host                      the host name, instead of showing localhost/127.0.0.1
--secure                    use https/wss
+-http2                     use http2
 -quiet                     no logging whatsoever
 -noBrowser                 won't open the browser automagically
 -only                      will only watch for changes in the given - slice
@@ -142,7 +142,7 @@ func main() {
 ```
 -port          is :1308
 -host          is 127.0.0.1
--secure        is false
+-http2         is false
 -quiet         is false
 -only          is []string{"."}, which means it'll watch everything
 -ignore        is []string{}, which means it won't ignore anything

@@ -13,7 +13,7 @@ func main() {
 	flag.StringVar(&cfg.Port, "port", "", "a string beginning with")
 	flag.StringVar(&cfg.Host, "host", "", "the base of your HTTPURL")
 	flag.StringVar(&cfg.Root, "root", "", "the root of you app")
-	flag.BoolVar(&cfg.Secure, "secure", false, "secure server or not")
+	flag.BoolVar(&cfg.HTTP2, "http2", false, "http2 server or not")
 	flag.BoolVar(&cfg.Quiet, "quiet", false, "no log")
 	flag.BoolVar(&cfg.NoBrowser, "noBrowser", false, "doesn't open the browser")
 	flag.StringVar(&cfg.OnlyCLI, "only", "", "watchable paths - separated by comma")

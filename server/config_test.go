@@ -42,7 +42,7 @@ func TestNewConfig(t *testing.T) {
 
 	assert.Equal(t, ":1308", cfg.Port, "default proxy value")
 	assert.Equal(t, "127.0.0.1", cfg.Host, "default host value")
-	assert.Equal(t, false, cfg.Secure, "default secure value")
+	assert.Equal(t, false, cfg.HTTP2, "default http2 value")
 	assert.Equal(t, false, cfg.Quiet, "default quiet value")
 	assert.Equal(t, false, cfg.NoBrowser, "default noBrowser value")
 	assert.Equal(t, "", cfg.OnlyCLI, "default OnlyCLI value")
@@ -66,7 +66,7 @@ func TestConfigParseURL(t *testing.T) {
 
 		cfg.Host = v.inHost
 		cfg.Port = v.inPort
-		cfg.Secure = v.inSecure
+		cfg.HTTP2 = v.inSecure
 
 		cfg.parse()
 
@@ -127,7 +127,7 @@ func TestConfigAssignBeingTheDefaultValues(t *testing.T) {
 	assert.Equal(t, "127.0.0.1", default1.Host, "should have the default Host")
 	assert.Equal(t, ":1308", default1.Port, "should have the default Port")
 	assert.Equal(t, false, default1.Quiet, "should have the default Quiet")
-	assert.Equal(t, false, default1.Secure, "should have the default Secure")
+	assert.Equal(t, false, default1.HTTP2, "should have the default HTTP2")
 }
 
 func TestConfigAssignBeingOverriddenByCli(t *testing.T) {
@@ -187,12 +187,12 @@ func TestConfigAssignBeingAdded(t *testing.T) {
 	cli1 := Config{}
 
 	cli1.Port = "abc"
-	file1.Secure = true
+	file1.HTTP2 = true
 
 	opt1.assign(default1, file1, cli1)
 
 	assert.Equal(t, "abc", opt1.Port, "should keep the port as it was")
-	assert.Equal(t, true, opt1.Secure, "should add the secure the the config")
+	assert.Equal(t, true, opt1.HTTP2, "should add the http2 the the config")
 
 	opt2 := NewConfig()
 	default2 := *NewConfig()
@@ -276,7 +276,7 @@ var tableTestParseURL = []struct {
 		inPort:          ":9876",
 		inSecure:        false,
 		outHTTPURL:      "http://abc:9876",
-		descriptionHTTP: "http - custom parsed value - not secure",
+		descriptionHTTP: "http - custom parsed value - not http2",
 		outWSURL:        "ws://abc:9876/ws",
 		descriptionWS:   "ws - custom parsed value - not secure",
 	},
@@ -285,7 +285,7 @@ var tableTestParseURL = []struct {
 		inPort:          ":1234",
 		inSecure:        true,
 		outHTTPURL:      "https://def:1234",
-		descriptionHTTP: "http - custom parsed value - secure",
+		descriptionHTTP: "http - custom parsed value - http2",
 		outWSURL:        "wss://def:1234/ws",
 		descriptionWS:   "ws - default parsed value - secure",
 	},

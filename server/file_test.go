@@ -10,7 +10,7 @@ func TestNewIndexFile(t *testing.T) {
 	cfg := NewConfig()
 
 	cfg.Root = "abc"
-	cfg.Secure = true
+	cfg.HTTP2 = true
 	cfg.Only = []string{"x", "y", "z"}
 
 	f := newIndexFile(cfg)

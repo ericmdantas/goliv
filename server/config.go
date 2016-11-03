@@ -19,7 +19,7 @@ const (
 type Config struct {
 	Port        string   `json:"port,omitempty"`
 	Host        string   `json:"host,omitempty"`
-	Secure      bool     `json:"secure,omitempty"`
+	HTTP2      bool     `json:"http2,omitempty"`
 	Quiet       bool     `json:"quiet,omitempty"`
 	NoBrowser   bool     `json:"noBrowser,omitempty"`
 	Only        []string `json:"only,omitempty"`
@@ -99,7 +99,7 @@ func (cfg *Config) parse() {
 		cfg.Port = defaultPort
 	}
 
-	if cfg.Secure {
+	if cfg.HTTP2 {
 		cfg.HTTPURL = "https://" + cfg.Host
 		cfg.WSURL = "wss://" + cfg.Host
 	} else {
@@ -171,7 +171,7 @@ func NewConfig() *Config {
 	return &Config{
 		Port:        defaultPort,
 		Host:        defaultHost,
-		Secure:      false,
+		HTTP2:      false,
 		Quiet:       false,
 		NoBrowser:   false,
 		OnlyCLI:     "",
