@@ -17,221 +17,229 @@ func (m myIndexFileMock) readIndexHTML() ([]byte, error) {
 	return []byte(m.info), m.err
 }
 
-func TestCfgFileNameConstant(t *testing.T) {
-	assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
-}
+func TestConfigConstant(t *testing.T) {
+	t.Run("golivrc", func(t *testing.T) {
+		assert.Equal(t, ".golivrc", cfgFileName, "should have the right name for the file")
+	})
 
-func TestDefaultPortConstant(t *testing.T) {
-	assert.Equal(t, ":1308", defaultPort, "should have the right port value")
-}
+	t.Run("port", func(t *testing.T) {
+		assert.Equal(t, ":1308", defaultPort, "should have the right port value")
+	})
 
-func TestDefaultHostConstant(t *testing.T) {
-	assert.Equal(t, "127.0.0.1", defaultHost, "should have the right host value")
-}
+	t.Run("host", func(t *testing.T) {
+		assert.Equal(t, "127.0.0.1", defaultHost, "should have the right host value")
+	})
 
-func TestInlinePathSeparatorConstant(t *testing.T) {
-	assert.Equal(t, ",", inlinePathSeparator, "should have the right path separator value")
-}
+	t.Run("inlinePathSeparator", func(t *testing.T) {
+		assert.Equal(t, ",", inlinePathSeparator, "should have the right path separator value")
+	})
 
-func TestNameIndexHTMLFileConstant(t *testing.T) {
-	assert.Equal(t, "index.html", nameIndexHTMLFile, "should have the right name for the index file")
+	t.Run("index.html", func(t *testing.T) {
+		assert.Equal(t, "index.html", nameIndexHTMLFile, "should have the right name for the index file")
+	})
 }
 
 func TestNewConfig(t *testing.T) {
-	cfg := NewConfig()
-
-	assert.Equal(t, ":1308", cfg.Port, "default proxy value")
-	assert.Equal(t, "127.0.0.1", cfg.Host, "default host value")
-	assert.Equal(t, false, cfg.HTTP2, "default http2 value")
-	assert.Equal(t, false, cfg.Quiet, "default quiet value")
-	assert.Equal(t, false, cfg.NoBrowser, "default noBrowser value")
-	assert.Equal(t, "", cfg.OnlyCLI, "default OnlyCLI value")
-	assert.Equal(t, []string{}, cfg.Only, "default OnlyCLI value")
-	assert.Equal(t, []string{}, cfg.Ignore, "default ignore value")
-	assert.Equal(t, "", cfg.PathIndex, "default pathIndex value")
-	assert.Equal(t, false, cfg.Proxy, "default proxy value")
-	assert.Equal(t, "", cfg.ProxyTarget, "default proxyTarget value")
-	assert.Equal(t, "", cfg.ProxyWhen, "default proxyWhen value")
-	assert.Equal(t, "", cfg.Root, "default root value")
-	assert.Equal(t, "", cfg.HTTPURL, "default HTTPURL value")
-	assert.Equal(t, "", cfg.WSURL, "default WSURL value")
-	assert.Equal(t, "", cfg.indexHTMLPath, "default index.html path")
-	assert.Equal(t, []byte{}, cfg.indexHTMLContent, "default index.html content value")
-}
-
-func TestConfigParseURL(t *testing.T) {
-	for _, v := range tableTestParseURL {
+	t.Run("default_values", func(t *testing.T) {
 		cfg := NewConfig()
 
-		cfg.Host = v.inHost
-		cfg.Port = v.inPort
-		cfg.HTTP2 = v.inSecure
-
-		cfg.parse()
-
-		assert.Equal(t, v.outHTTPURL, cfg.HTTPURL, v.descriptionHTTP)
-		assert.Equal(t, v.outWSURL, cfg.WSURL, v.descriptionWS)
-	}
+		assert.Equal(t, ":1308", cfg.Port, "default proxy value")
+		assert.Equal(t, "127.0.0.1", cfg.Host, "default host value")
+		assert.Equal(t, false, cfg.HTTP2, "default http2 value")
+		assert.Equal(t, false, cfg.Quiet, "default quiet value")
+		assert.Equal(t, false, cfg.NoBrowser, "default noBrowser value")
+		assert.Equal(t, "", cfg.OnlyCLI, "default OnlyCLI value")
+		assert.Equal(t, []string{}, cfg.Only, "default OnlyCLI value")
+		assert.Equal(t, []string{}, cfg.Ignore, "default ignore value")
+		assert.Equal(t, "", cfg.PathIndex, "default pathIndex value")
+		assert.Equal(t, false, cfg.Proxy, "default proxy value")
+		assert.Equal(t, "", cfg.ProxyTarget, "default proxyTarget value")
+		assert.Equal(t, "", cfg.ProxyWhen, "default proxyWhen value")
+		assert.Equal(t, "", cfg.Root, "default root value")
+		assert.Equal(t, "", cfg.HTTPURL, "default HTTPURL value")
+		assert.Equal(t, "", cfg.WSURL, "default WSURL value")
+		assert.Equal(t, "", cfg.indexHTMLPath, "default index.html path")
+		assert.Equal(t, []byte{}, cfg.indexHTMLContent, "default index.html content value")
+	})
 }
 
-func TestConfigParseOnlyPaths(t *testing.T) {
-	for _, v := range tableTestParseOnlyPaths {
-		cfg := NewConfig()
+func TestConfigParse(t *testing.T) {
+	t.Run("httpurl_wsurl", func(t *testing.T) {
+		for _, v := range tableTestParseURL {
+			cfg := NewConfig()
 
-		cfg.Only = v.inOnly
-		cfg.OnlyCLI = v.inOnlyCLI
-		cfg.Root = v.inRoot
+			cfg.Host = v.inHost
+			cfg.Port = v.inPort
+			cfg.HTTP2 = v.inSecure
 
-		cfg.parse()
+			cfg.parse()
 
-		assert.Equal(t, v.outOnly, cfg.Only, v.description)
-	}
+			assert.Equal(t, v.outHTTPURL, cfg.HTTPURL, v.descriptionHTTP)
+			assert.Equal(t, v.outWSURL, cfg.WSURL, v.descriptionWS)
+		}
+	})
+
+	t.Run("only_paths", func(t *testing.T) {
+		for _, v := range tableTestParseOnlyPaths {
+			cfg := NewConfig()
+
+			cfg.Only = v.inOnly
+			cfg.OnlyCLI = v.inOnlyCLI
+			cfg.Root = v.inRoot
+
+			cfg.parse()
+
+			assert.Equal(t, v.outOnly, cfg.Only, v.description)
+		}
+	})
+
+	t.Run("ignore_paths", func(t *testing.T) {
+		for _, v := range tableTestParseIgnorePaths {
+			cfg := NewConfig()
+
+			cfg.Ignore = v.inIgnoreFile
+			cfg.IgnoreCLI = v.inIgnoreCLI
+			cfg.Root = v.inRoot
+
+			cfg.parse()
+
+			assert.Equal(t, v.outIgnore, cfg.Ignore, v.description)
+		}
+	})
+
+	t.Run("index_path", func(t *testing.T) {
+		for _, v := range tableTestParseIndexHTMLPathInfo {
+			cfg := NewConfig()
+
+			cfg.Root = v.inRoot
+			cfg.PathIndex = v.inPathIndex
+
+			cfg.parse()
+
+			assert.Equal(t, v.outIndexHTMLPath, cfg.indexHTMLPath, v.description)
+		}
+	})
 }
 
-func TestConfigParseIgnorePaths(t *testing.T) {
-	for _, v := range tableTestParseIgnorePaths {
-		cfg := NewConfig()
-
-		cfg.Ignore = v.inIgnoreFile
-		cfg.IgnoreCLI = v.inIgnoreCLI
-		cfg.Root = v.inRoot
-
-		cfg.parse()
-
-		assert.Equal(t, v.outIgnore, cfg.Ignore, v.description)
-	}
-}
-
-func TestConfigParseIndexHTMLPathInfo(t *testing.T) {
-	for _, v := range tableTestParseIndexHTMLPathInfo {
-		cfg := NewConfig()
-
-		cfg.Root = v.inRoot
-		cfg.PathIndex = v.inPathIndex
-
-		cfg.parse()
-
-		assert.Equal(t, v.outIndexHTMLPath, cfg.indexHTMLPath, v.description)
-	}
-}
-
-func TestConfigAssignBeingTheDefaultValues(t *testing.T) {
-	opt1 := NewConfig()
-	default1 := *NewConfig()
-	file1 := Config{}
-	cli1 := Config{}
-
-	opt1.assign(default1, file1, cli1)
-
-	assert.Equal(t, "127.0.0.1", default1.Host, "should have the default Host")
-	assert.Equal(t, ":1308", default1.Port, "should have the default Port")
-	assert.Equal(t, false, default1.Quiet, "should have the default Quiet")
-	assert.Equal(t, false, default1.HTTP2, "should have the default HTTP2")
-}
-
-func TestConfigAssignBeingOverriddenByCli(t *testing.T) {
-	opt1 := NewConfig()
-	default1 := *NewConfig()
-	file1 := Config{}
-	cli1 := Config{}
-
-	cli1.Port = "abc"
-	file1.Port = "123"
-
-	opt1.assign(default1, file1, cli1)
-
-	assert.Equal(t, "abc", cli1.Port, "should override the port from the file")
-
-	opt2 := NewConfig()
-	default2 := *NewConfig()
-	file2 := Config{}
-	cli2 := Config{}
-
-	cli2.Host = "https://abc.com"
-	file2.Host = "yoyo://abc.??"
-
-	opt2.assign(default2, file2, cli2)
-
-	assert.Equal(t, "https://abc.com", cli2.Host, "should override the Host")
-}
-
-func TestConfigAssignBeingOverriddenByFile(t *testing.T) {
-	opt1 := NewConfig()
-	default1 := *NewConfig()
-	file1 := Config{}
-	cli1 := Config{}
-
-	file1.Port = "123"
-
-	opt1.assign(default1, file1, cli1)
-
-	assert.Equal(t, "123", opt1.Port, "should override the port from the default values")
-
-	opt2 := NewConfig()
-	default2 := *NewConfig()
-	file2 := Config{}
-	cli2 := Config{}
-
-	file2.Host = "yoyo://abc.??"
-
-	opt2.assign(default2, file2, cli2)
-
-	assert.Equal(t, "yoyo://abc.??", opt2.Host, "should override the Host from the default values")
-}
-
-func TestConfigAssignBeingAdded(t *testing.T) {
-	opt1 := NewConfig()
-	default1 := *NewConfig()
-	file1 := Config{}
-	cli1 := Config{}
-
-	cli1.Port = "abc"
-	file1.HTTP2 = true
-
-	opt1.assign(default1, file1, cli1)
-
-	assert.Equal(t, "abc", opt1.Port, "should keep the port as it was")
-	assert.Equal(t, true, opt1.HTTP2, "should add the http2 the the config")
-
-	opt2 := NewConfig()
-	default2 := *NewConfig()
-	file2 := Config{}
-	cli2 := Config{}
-
-	cli2.Host = "https://abc.com"
-	file2.Only = []string{"a", "b", "c"}
-
-	opt2.assign(default2, file2, cli2)
-
-	assert.Equal(t, "https://abc.com", opt2.Host, "should keep the Host")
-	assert.Equal(t, []string{"a", "b", "c"}, opt2.Only, "should add Only to the option")
-
-	opt3 := NewConfig()
-	default3 := *NewConfig()
-	file3 := Config{}
-	cli3 := Config{}
-
-	cli3.Host = "https://abc123.com"
-	cli3.OnlyCLI = "x,y,z"
-
-	opt3.assign(default3, file3, cli3)
-
-	assert.Equal(t, "https://abc123.com", opt3.Host, "should keep the Host")
-	assert.Equal(t, "x,y,z", opt3.OnlyCLI, "should add OnlyCLI to the option")
-	assert.Equal(t, []string{"x", "y", "z"}, opt3.Only, "should add Only to the option - already parsed")
-}
-
-func TestConfigAssignOnlyIgnores(t *testing.T) {
-	for _, v := range tableTestAssignIgnorePaths {
-		opt := NewConfig()
+func TestConfigAssign(t *testing.T) {
+	t.Run("default_values", func(t *testing.T) {
+		opt1 := NewConfig()
 		default1 := *NewConfig()
-		file1 := Config{Ignore: v.inIgnoreFile}
-		cli1 := Config{IgnoreCLI: v.inIgnoreCLI}
+		file1 := Config{}
+		cli1 := Config{}
 
-		opt.assign(default1, file1, cli1)
+		opt1.assign(default1, file1, cli1)
 
-		assert.Equal(t, v.outIgnore, opt.Ignore, v.description)
-	}
+		assert.Equal(t, "127.0.0.1", default1.Host, "should have the default Host")
+		assert.Equal(t, ":1308", default1.Port, "should have the default Port")
+		assert.Equal(t, false, default1.Quiet, "should have the default Quiet")
+		assert.Equal(t, false, default1.HTTP2, "should have the default HTTP2")
+	})
+
+	t.Run("overridden_cli", func(t *testing.T) {
+		opt1 := NewConfig()
+		default1 := *NewConfig()
+		file1 := Config{}
+		cli1 := Config{}
+
+		cli1.Port = "abc"
+		file1.Port = "123"
+
+		opt1.assign(default1, file1, cli1)
+
+		assert.Equal(t, "abc", cli1.Port, "should override the port from the file")
+
+		opt2 := NewConfig()
+		default2 := *NewConfig()
+		file2 := Config{}
+		cli2 := Config{}
+
+		cli2.Host = "https://abc.com"
+		file2.Host = "yoyo://abc.??"
+
+		opt2.assign(default2, file2, cli2)
+
+		assert.Equal(t, "https://abc.com", cli2.Host, "should override the Host")
+	})
+
+	t.Run("overriden_file", func(t *testing.T) {
+		opt1 := NewConfig()
+		default1 := *NewConfig()
+		file1 := Config{}
+		cli1 := Config{}
+
+		file1.Port = "123"
+
+		opt1.assign(default1, file1, cli1)
+
+		assert.Equal(t, "123", opt1.Port, "should override the port from the default values")
+
+		opt2 := NewConfig()
+		default2 := *NewConfig()
+		file2 := Config{}
+		cli2 := Config{}
+
+		file2.Host = "yoyo://abc.??"
+
+		opt2.assign(default2, file2, cli2)
+
+		assert.Equal(t, "yoyo://abc.??", opt2.Host, "should override the Host from the default values")
+	})
+
+	t.Run("props_added", func(t *testing.T) {
+		opt1 := NewConfig()
+		default1 := *NewConfig()
+		file1 := Config{}
+		cli1 := Config{}
+
+		cli1.Port = "abc"
+		file1.HTTP2 = true
+
+		opt1.assign(default1, file1, cli1)
+
+		assert.Equal(t, "abc", opt1.Port, "should keep the port as it was")
+		assert.Equal(t, true, opt1.HTTP2, "should add the http2 the the config")
+
+		opt2 := NewConfig()
+		default2 := *NewConfig()
+		file2 := Config{}
+		cli2 := Config{}
+
+		cli2.Host = "https://abc.com"
+		file2.Only = []string{"a", "b", "c"}
+
+		opt2.assign(default2, file2, cli2)
+
+		assert.Equal(t, "https://abc.com", opt2.Host, "should keep the Host")
+		assert.Equal(t, []string{"a", "b", "c"}, opt2.Only, "should add Only to the option")
+
+		opt3 := NewConfig()
+		default3 := *NewConfig()
+		file3 := Config{}
+		cli3 := Config{}
+
+		cli3.Host = "https://abc123.com"
+		cli3.OnlyCLI = "x,y,z"
+
+		opt3.assign(default3, file3, cli3)
+
+		assert.Equal(t, "https://abc123.com", opt3.Host, "should keep the Host")
+		assert.Equal(t, "x,y,z", opt3.OnlyCLI, "should add OnlyCLI to the option")
+		assert.Equal(t, []string{"x", "y", "z"}, opt3.Only, "should add Only to the option - already parsed")
+	})
+
+	t.Run("assign_ignores", func(t *testing.T) {
+		for _, v := range tableTestAssignIgnorePaths {
+			opt := NewConfig()
+			default1 := *NewConfig()
+			file1 := Config{Ignore: v.inIgnoreFile}
+			cli1 := Config{IgnoreCLI: v.inIgnoreCLI}
+
+			opt.assign(default1, file1, cli1)
+
+			assert.Equal(t, v.outIgnore, opt.Ignore, v.description)
+		}
+	})
 }
 
 func TestReadIndexHTML(t *testing.T) {
