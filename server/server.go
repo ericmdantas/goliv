@@ -72,7 +72,6 @@ func (s *server) start(cbServerReady func() error) error {
 
 	e.GET("/", s.sendIndex())
 	e.GET("/ws", standard.WrapHandler(s.handleWSConnection()))
-	e.GET("/*", s.sendIndex())
 
 	if s.cfg.Proxy {
 		e.Get(s.cfg.ProxyWhen, func(c echo.Context) error {
@@ -93,6 +92,8 @@ func (s *server) start(cbServerReady func() error) error {
 			return nil
 		})
 	}
+
+	e.GET("/*", s.sendIndex())
 
 	log.Printf("Goliv running on %s\n", s.cfg.HTTPURL)
 
