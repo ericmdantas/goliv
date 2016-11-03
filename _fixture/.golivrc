@@ -1,5 +1,4 @@
 {
     "quiet": true,
-    "only": ["_fixture"],
     "port": ":1309" 
 }
