@@ -72,6 +72,7 @@ func (s *server) start(cbServerReady func() error) error {
 
 	e.GET("/", s.sendIndex())
 	e.GET("/ws", standard.WrapHandler(s.handleWSConnection()))
+	e.Any("/*", s.sendIndex())
 
 	if s.cfg.Proxy {
 		e.Get(s.cfg.ProxyWhen, func(c echo.Context) error {
