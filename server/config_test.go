@@ -121,6 +121,49 @@ func TestConfigParse(t *testing.T) {
 	})
 }
 
+func BenchmarkConfigParse(b *testing.B) {
+	b.Run("root_only_ignore_pathIndex_informed", func(b *testing.B) {
+		cfg := NewConfig()
+
+		for i := 0; i < b.N; i++ {
+			cfg.Root = "a"
+			cfg.Only = []string{"b"}
+			cfg.Ignore = []string{"c"}
+			cfg.PathIndex = "x"
+
+			cfg.parse()
+		}
+	})
+
+	b.Run("root_onlyCLI_ignoreCLI_pathIndex_informed", func(b *testing.B) {
+		cfg := NewConfig()
+
+		for i := 0; i < b.N; i++ {
+			cfg.Root = "a"
+			cfg.OnlyCLI = "b"
+			cfg.IgnoreCLI = "c"
+			cfg.PathIndex = "x"
+
+			cfg.parse()
+		}
+	})
+
+	b.Run("root_only_onlyCLI_ignore_ignoreCLI_pathIndex_informed", func(b *testing.B) {
+		cfg := NewConfig()
+
+		for i := 0; i < b.N; i++ {
+			cfg.Root = "a"
+			cfg.Only = []string{"b0"}
+			cfg.OnlyCLI = "b1"
+			cfg.Ignore = []string{"c0"}
+			cfg.IgnoreCLI = "c1"
+			cfg.PathIndex = "x"
+
+			cfg.parse()
+		}
+	})
+}
+
 func TestConfigAssign(t *testing.T) {
 	t.Run("default_values", func(t *testing.T) {
 		opt1 := NewConfig()
@@ -238,6 +281,74 @@ func TestConfigAssign(t *testing.T) {
 			opt.assign(default1, file1, cli1)
 
 			assert.Equal(t, v.outIgnore, opt.Ignore, v.description)
+		}
+	})
+}
+
+func BenchmarkConfigAssign(b *testing.B) {
+	b.Run("default_values", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			opt1 := NewConfig()
+			default1 := *NewConfig()
+			file1 := Config{}
+			cli1 := Config{}
+
+			opt1.assign(default1, file1, cli1)
+		}
+	})
+
+	b.Run("values_overriden_cli", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			opt1 := NewConfig()
+			default1 := *NewConfig()
+			file1 := Config{}
+			cli1 := Config{}
+
+			cli1.Port = "abc"
+			file1.Port = "123"
+
+			opt1.assign(default1, file1, cli1)
+		}
+	})
+
+	b.Run("values_overriden_file", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			opt1 := NewConfig()
+			default1 := *NewConfig()
+			file1 := Config{}
+			cli1 := Config{}
+
+			file1.Port = "123"
+
+			opt1.assign(default1, file1, cli1)
+		}
+	})
+
+	b.Run("props_added", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			opt1 := NewConfig()
+			default1 := *NewConfig()
+			file1 := Config{}
+			cli1 := Config{}
+
+			cli1.Port = "abc"
+			file1.HTTP2 = true
+
+			opt1.assign(default1, file1, cli1)
+		}
+	})
+
+	b.Run("ignore_cli", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			opt1 := NewConfig()
+			default1 := *NewConfig()
+			file1 := Config{}
+			cli1 := Config{}
+
+			cli1.IgnoreCLI = "abc,123,890,mno"
+			file1.Ignore = []string{"xyz"}
+
+			opt1.assign(default1, file1, cli1)
 		}
 	})
 }
