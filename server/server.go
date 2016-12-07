@@ -13,8 +13,6 @@ import (
 	"golang.org/x/net/websocket"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine"
-	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/echo/middleware"
 	"github.com/radovskyb/watcher"
 )
@@ -77,10 +75,10 @@ func (s *server) start(cbServerReady func() error) error {
 	}))
 
 	e.GET("/", s.sendIndex())
-	e.GET("/ws", standard.WrapHandler(s.handleWSConnection()))
+	e.GET("/ws", s.handleWSConnection)
 
 	if s.cfg.Proxy {
-		e.Get(s.cfg.ProxyWhen, func(c echo.Context) error {
+		e.GET(s.cfg.ProxyWhen, func(c echo.Context) error {
 			res := c.Response()
 			req := c.Request()
 			u, err := url.Parse(s.cfg.ProxyTarget)
@@ -108,18 +106,14 @@ func (s *server) start(cbServerReady func() error) error {
 	}
 
 	if s.cfg.HTTP2 {
-		err := e.Run(standard.WithConfig(engine.Config{
-			Address:     s.cfg.Port,
-			TLSCertFile: "server/crt/server.crt",
-			TLSKeyFile:  "server/crt/server.key",
-		}))
+		err := e.StartTLS(s.cfg.Port, "server/crt/server.crt", "server/crt/server.key")
 
 		if err != nil {
 			return err
 		}
 	}
 
-	return e.Run(standard.New(s.cfg.Port))
+	return e.Start(s.cfg.Port)
 }
 
 func (s *server) sendIndex() echo.HandlerFunc {
@@ -140,10 +134,12 @@ func (s *server) sendIndex() echo.HandlerFunc {
 	}
 }
 
-func (s *server) handleWSConnection() websocket.Handler {
-	return websocket.Handler(func(conn *websocket.Conn) {
+func (s *server) handleWSConnection(c echo.Context) error {
+	websocket.Handler(func(conn *websocket.Conn) {
 		s.onChange(conn)
-	})
+	}).ServeHTTP(c.Response(), c.Request())
+
+	return nil
 }
 
 func (s *server) onChange(conn *websocket.Conn) {
