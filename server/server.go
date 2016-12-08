@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	_ "net/http/httputil"
+	"net/http/httputil"
 	"net/url"
 	"path/filepath"
 	"time"
@@ -70,19 +70,13 @@ func (s *server) start(cbServerReady func() error) error {
 
 	if s.cfg.Proxy {
 		e.GET(s.cfg.ProxyWhen, func(c echo.Context) error {
-			res := c.Response()
-			req := c.Request()
 			u, err := url.Parse(s.cfg.ProxyTarget)
 
 			if err != nil {
 				return err
 			}
 
-			// httputil.NewSingleHostReverseProxy(url).ServeHTTP(res, req)
-
-			fmt.Println(res)
-			fmt.Println(req)
-			fmt.Println(u)
+			httputil.NewSingleHostReverseProxy(u).ServeHTTP(c.Response(), c.Request())
 
 			return nil
 		})
