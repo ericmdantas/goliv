@@ -62,17 +62,8 @@ func (s *server) start(cbServerReady func() error) error {
 		Level: gzip.BestCompression,
 	}))
 
-	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  s.cfg.Root,
-		HTML5: true,
-		Index: "_______", // serve the index by hand
-	}))
-
-	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  filepath.Join(s.cfg.Root, s.cfg.PathIndex),
-		HTML5: true,
-		Index: "_______", // serve the index by hand
-	}))
+	e.Static(s.cfg.Root, "")
+	e.Static(filepath.Join(s.cfg.Root, s.cfg.PathIndex), "")
 
 	e.GET("/", s.sendIndex())
 	e.GET("/ws", s.handleWSConnection)
