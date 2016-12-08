@@ -62,8 +62,8 @@ func (s *server) start(cbServerReady func() error) error {
 		Level: gzip.BestCompression,
 	}))
 
-	e.Static("/", s.cfg.Root)
-	e.Static("/", filepath.Join(s.cfg.Root, s.cfg.PathIndex))
+	e.Static(s.cfg.Root, "/")
+	e.Static(filepath.Join(s.cfg.Root, s.cfg.PathIndex), "/")
 
 	e.GET("/", s.sendIndex())
 	e.GET("/ws", s.handleWSConnection)
