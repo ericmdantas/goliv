@@ -65,13 +65,13 @@ func (s *server) start(cbServerReady func() error) error {
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  s.cfg.Root,
 		HTML5: true,
-		Index: "_______", // serve the index by hand
+		Index: "___", // served by hand
 	}))
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  filepath.Join(s.cfg.Root, s.cfg.PathIndex),
 		HTML5: true,
-		Index: "_______", // serve the index by hand
+		Index: "___", // served by hand
 	}))
 
 	e.GET("/", s.sendIndex())
