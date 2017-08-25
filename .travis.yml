@@ -1,6 +1,8 @@
 language: go
 sudo: false
 go:
-  - 1.7
+  - 1.9
+  - tip
 before_script: go vet ./...
+
 script: go test -v ./... -bench=. -benchmem
