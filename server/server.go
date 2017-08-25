@@ -58,6 +58,8 @@ type server struct {
 func (s *server) start(cbServerReady func() error) error {
 	e := echo.New()
 
+	e.Use(middleware.Logger())
+
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Level: gzip.BestCompression,
 	}))
@@ -65,13 +67,13 @@ func (s *server) start(cbServerReady func() error) error {
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  s.cfg.Root,
 		HTML5: true,
-		Index: "___", // served by hand
+		Index: "^';..;'^", // served by hand
 	}))
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  filepath.Join(s.cfg.Root, s.cfg.PathIndex),
 		HTML5: true,
-		Index: "___", // served by hand
+		Index: "^';..;'^", // served by hand
 	}))
 
 	e.GET("/", s.sendIndex())
@@ -129,14 +131,16 @@ func (s *server) sendIndex() echo.HandlerFunc {
 }
 
 func (s *server) handleWSConnection(c echo.Context) error {
-	websocket.Handler(func(conn *websocket.Conn) {
-		s.onChange(conn)
+	websocket.Handler(func(ws *websocket.Conn) {
+		defer ws.Close()
+
+		s.onChange(ws)
 	}).ServeHTTP(c.Response(), c.Request())
 
 	return nil
 }
 
-func (s *server) onChange(conn *websocket.Conn) {
+func (s *server) onChange(ws *websocket.Conn) {
 	select {
 	case event := <-s.watcher.Event:
 		switch event.Op {
@@ -145,33 +149,33 @@ func (s *server) onChange(conn *websocket.Conn) {
 				log.Println("Created file:", event.Name())
 			}
 
-			s.notifyChange(conn)
+			s.notifyChange(ws)
 		case watcher.Write:
 			if !s.cfg.Quiet {
 				log.Println("Changed file:", event.Name())
 			}
 
-			s.notifyChange(conn)
+			s.notifyChange(ws)
 		case watcher.Remove:
 			if !s.cfg.Quiet {
 				log.Println("Removed file:", event.Name())
 			}
 
-			s.notifyChange(conn)
+			s.notifyChange(ws)
 		case watcher.Rename:
 			if !s.cfg.Quiet {
 				log.Println("Renamed file:", event.Name())
 			}
 
-			s.notifyChange(conn)
+			s.notifyChange(ws)
 		}
 	case err := <-s.watcher.Error:
 		log.Fatalln(err)
 	}
 }
 
-func (s *server) notifyChange(conn *websocket.Conn) {
-	conn.Write([]byte(reloadEvent))
+func (s *server) notifyChange(ws *websocket.Conn) {
+	ws.Write([]byte(reloadEvent))
 }
 
 func (s *server) startWatcher() error {
