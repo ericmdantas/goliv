@@ -10,32 +10,39 @@
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
-  revision = "d2709f9f1f31ebcda9651b03077758c1f3a0018c"
-  version = "v3.0.0"
+  revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
+  version = "v3.1.0"
 
 [[projects]]
   name = "github.com/labstack/echo"
-  packages = [".","middleware"]
-  revision = "935a60782cbbc55110e7bd4b33120e4567cbee43"
-  version = "v3.2.1"
+  packages = [
+    ".",
+    "middleware"
+  ]
+  revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
+  version = "3.2.6"
 
 [[projects]]
   name = "github.com/labstack/gommon"
-  packages = ["bytes","color","log","random"]
-  revision = "779b8a8b9850a97acba6a3fe20feb628c39e17c1"
-  version = "0.2.2"
+  packages = [
+    "bytes",
+    "color",
+    "log",
+    "random"
+  ]
+  revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
+  version = "0.2.3"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
   packages = ["."]
-  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
-  version = "v0.0.9"
+  revision = "ed8eb9e318d7a84ce5915b495b7d35e0cfe7b5a8"
+  version = "v0.0.6"
 
 [[projects]]
   name = "github.com/mattn/go-isatty"
   packages = ["."]
-  revision = "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
-  version = "v0.0.2"
+  revision = "66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -58,8 +65,8 @@
 [[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
-  version = "v1.1.4"
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
 
 [[projects]]
   branch = "master"
@@ -76,24 +83,27 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert"]
-  revision = "eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035"
+  packages = [
+    "acme",
+    "acme/autocert"
+  ]
+  revision = "91a49db82a88618983a78a06c1cbd4e00ab749ab"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["websocket"]
-  revision = "1c05540f6879653db88113bc4a2b70aec4bd491f"
+  revision = "22ae77b79946ea320088417e4d50825671d82d57"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "07c182904dbd53199946ba614a412c61d3c548f5"
+  revision = "dd2ff4accc098aceecb86b36eaa7829b2a17b1c9"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "477fdf021832a84079c5359c7951ee1266b515ed2bf1435dc8a2b255901ed61d"
+  inputs-digest = "8936c667bedf1a7ddb2e472e8d064bacf87e8366f3c66e7d465d6138da5d207d"
   solver-name = "gps-cdcl"
   solver-version = 1
