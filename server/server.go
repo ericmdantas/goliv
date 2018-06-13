@@ -57,25 +57,20 @@ type server struct {
 
 func (s *server) start(cbServerReady func() error) error {
 	e := echo.New()
-
 	e.Use(middleware.Logger())
-
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Level: gzip.BestCompression,
 	}))
-
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  s.cfg.Root,
 		HTML5: true,
 		Index: "^';..;'^", // served by hand
 	}))
-
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  filepath.Join(s.cfg.Root, s.cfg.PathIndex),
 		HTML5: true,
 		Index: "^';..;'^", // served by hand
 	}))
-
 	e.GET("/", s.sendIndex())
 	e.GET("/ws", s.handleWSConnection)
 
@@ -146,25 +141,25 @@ func (s *server) onChange(ws *websocket.Conn) {
 		switch event.Op {
 		case watcher.Create:
 			if !s.cfg.Quiet {
-				log.Println("Created file:", event.Name())
+				log.Println("CREATEd -> ", event.Name())
 			}
 
 			s.notifyChange(ws)
 		case watcher.Write:
 			if !s.cfg.Quiet {
-				log.Println("Changed file:", event.Name())
+				log.Println("CHANGED -> ", event.Name())
 			}
 
 			s.notifyChange(ws)
 		case watcher.Remove:
 			if !s.cfg.Quiet {
-				log.Println("Removed file:", event.Name())
+				log.Println("REMOVED -> ", event.Name())
 			}
 
 			s.notifyChange(ws)
 		case watcher.Rename:
 			if !s.cfg.Quiet {
-				log.Println("Renamed file:", event.Name())
+				log.Println("RENAMED -> ", event.Name())
 			}
 
 			s.notifyChange(ws)
