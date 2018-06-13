@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"golang.org/x/net/websocket"
+	"github.com/gorilla/websocket"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -20,6 +20,10 @@ import (
 const (
 	reloadEvent       = "reload"
 	intervalFileCheck = 1000
+)
+
+var (
+	upgrader = websocket.Upgrader{}
 )
 
 func Start(cfg *Config) error {
@@ -126,11 +130,15 @@ func (s *server) sendIndex() echo.HandlerFunc {
 }
 
 func (s *server) handleWSConnection(c echo.Context) error {
-	websocket.Handler(func(ws *websocket.Conn) {
-		defer ws.Close()
+	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 
-		s.onChange(ws)
-	}).ServeHTTP(c.Response(), c.Request())
+	if err != nil {
+		return err
+	}
+
+	defer ws.Close()
+
+	s.onChange(ws)
 
 	return nil
 }
@@ -170,7 +178,7 @@ func (s *server) onChange(ws *websocket.Conn) {
 }
 
 func (s *server) notifyChange(ws *websocket.Conn) {
-	ws.Write([]byte(reloadEvent))
+	ws.WriteMessage(websocket.TextMessage, []byte(reloadEvent))
 }
 
 func (s *server) startWatcher() error {
