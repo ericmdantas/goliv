@@ -1,7 +1,8 @@
 h1 {
-    color: green;
+    color: #fff;
     text-decoration: underline;
     padding: 10px;
     border: 1px solid red;
-    background-color: yellow;
+    background-color: green;
+    text-shadow: 1px 1px 1px #000;
 }
