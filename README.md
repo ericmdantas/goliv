@@ -80,7 +80,7 @@ Oh, do you want some specific stuff? Checkout the available <a href="#config">co
 -host                      the host name, instead of showing localhost/127.0.0.1
 -http2                     use http2
 -quiet                     no logging whatsoever
--noBrowser                 won't open the browser automagically
+-openBrowser               opens the browser automagically
 -only                      will only watch for changes in the given - slice
 -ignore                    won't watch for changes in the given paths - slice
 -pathIndex                 change the path to your index.html
@@ -144,7 +144,7 @@ func main() {
 -quiet         is false
 -only          is []string{"."}, which means it'll watch everything
 -ignore        is []string{}, which means it won't ignore anything
--noBrowser     is false, which means it'll always open the browser on start
+-openBrowser   is true, which means it'll always open the browser on start
 -pathIndex     is "", which means it'll look for the index.html in the root
 -proxy         is false, which means it'll not look for another server to answer for the /api/, for example
 -proxyTarget   is "", no server to be target

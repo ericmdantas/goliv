@@ -34,7 +34,7 @@ func injectScript(cfg *Config) (string, error) {
 }
 
 func openBrowser(cfg *Config) error {
-	if cfg.NoBrowser {
+	if !cfg.OpenBrowser {
 		return nil
 	}
 

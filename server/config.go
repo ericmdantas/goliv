@@ -21,7 +21,7 @@ type Config struct {
 	Host        string   `json:"host,omitempty"`
 	HTTP2       bool     `json:"http2,omitempty"`
 	Quiet       bool     `json:"quiet,omitempty"`
-	NoBrowser   bool     `json:"noBrowser,omitempty"`
+	OpenBrowser   bool     `json:"openBrowser,omitempty"`
 	Only        []string `json:"only,omitempty"`
 	Ignore      []string `json:"ignore,omitempty"`
 	PathIndex   string   `json:"pathIndex,omitempty"`
@@ -173,7 +173,7 @@ func NewConfig() *Config {
 		Host:        defaultHost,
 		HTTP2:       false,
 		Quiet:       false,
-		NoBrowser:   false,
+		OpenBrowser: true,
 		OnlyCLI:     "",
 		Only:        []string{},
 		Ignore:      []string{},

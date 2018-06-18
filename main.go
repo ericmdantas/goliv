@@ -15,7 +15,7 @@ func main() {
 	flag.StringVar(&cfg.Root, "root", "", "the root of you app")
 	flag.BoolVar(&cfg.HTTP2, "http2", false, "http2 server or not")
 	flag.BoolVar(&cfg.Quiet, "quiet", false, "no log")
-	flag.BoolVar(&cfg.NoBrowser, "noBrowser", false, "doesn't open the browser")
+	flag.BoolVar(&cfg.OpenBrowser, "openBrowser", false, "open the browser")
 	flag.StringVar(&cfg.OnlyCLI, "only", "", "watchable paths - separated by comma")
 	flag.StringVar(&cfg.IgnoreCLI, "ignore", "", "paths ignored - separated by comma")
 	flag.StringVar(&cfg.PathIndex, "pathIndex", "", "path to the index.html")

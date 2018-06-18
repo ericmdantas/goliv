@@ -1,5 +1,5 @@
 {
     "quiet": true,
     "port": ":1309",
-    "noBrowser": true
+    "openBrowser": false
 }

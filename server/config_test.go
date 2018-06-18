@@ -47,7 +47,7 @@ func TestNewConfig(t *testing.T) {
 		assert.Equal(t, "127.0.0.1", cfg.Host, "default host value")
 		assert.Equal(t, false, cfg.HTTP2, "default http2 value")
 		assert.Equal(t, false, cfg.Quiet, "default quiet value")
-		assert.Equal(t, false, cfg.NoBrowser, "default noBrowser value")
+		assert.Equal(t, true, cfg.OpenBrowser, "default openBrowser value")
 		assert.Equal(t, "", cfg.OnlyCLI, "default OnlyCLI value")
 		assert.Equal(t, []string{}, cfg.Only, "default OnlyCLI value")
 		assert.Equal(t, []string{}, cfg.Ignore, "default ignore value")
