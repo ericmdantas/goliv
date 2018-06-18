@@ -151,7 +151,7 @@ func (s *server) onChange(ws *websocket.Conn) {
 		switch event.Op {
 		case watcher.Create:
 			if !s.cfg.Quiet {
-				log.Println("CREATEd -> ", event.Name())
+				log.Println("CREATED -> ", event.Name())
 			}
 
 			s.notifyChange(ws)
