@@ -76,7 +76,7 @@ func (s *server) start(cbServerReady func() error) error {
 		Index: "^';..;'^", // served by hand
 	}))
 	e.GET("/", s.sendIndex())
-	e.GET("/ws", s.handleWSConnection)
+	e.GET("/ws", s.handleWSConnection())
 
 	if s.cfg.Proxy {
 		e.GET(s.cfg.ProxyWhen, func(c echo.Context) error {
@@ -129,18 +129,20 @@ func (s *server) sendIndex() echo.HandlerFunc {
 	}
 }
 
-func (s *server) handleWSConnection(c echo.Context) error {
-	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+func (s *server) handleWSConnection() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		defer ws.Close()
+
+		s.onChange(ws)
+
+		return nil
 	}
-
-	defer ws.Close()
-
-	s.onChange(ws)
-
-	return nil
 }
 
 func (s *server) onChange(ws *websocket.Conn) {
