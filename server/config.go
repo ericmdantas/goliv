@@ -21,7 +21,7 @@ type Config struct {
 	Host        string   `json:"host,omitempty"`
 	HTTP2       bool     `json:"http2,omitempty"`
 	Quiet       bool     `json:"quiet,omitempty"`
-	OpenBrowser   bool     `json:"openBrowser,omitempty"`
+	OpenBrowser bool     `json:"openBrowser,omitempty"`
 	Only        []string `json:"only,omitempty"`
 	Ignore      []string `json:"ignore,omitempty"`
 	PathIndex   string   `json:"pathIndex,omitempty"`
