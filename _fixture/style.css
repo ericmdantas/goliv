@@ -1,8 +1,3 @@
-h1 {
-    color: #fff;
-    text-decoration: underline;
-    padding: 10px;
-    border: 1px solid red;
-    background-color: green;
-    text-shadow: 1px 1px 1px #000;
+main>p {
+    color: green;
 }
